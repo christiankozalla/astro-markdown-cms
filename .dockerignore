@@ -1,0 +1,12 @@
+# astro build output
+dist
+
+node_modules
+
+public
+src
+
+README.md
+Dockefile
+docker-compose.yml
+

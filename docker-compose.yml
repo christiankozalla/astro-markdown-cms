@@ -1,0 +1,12 @@
+version: '3.9'
+services:
+  app:
+    image: michaels-astro-blog
+    restart: always
+    volumes:
+      - ./src:/src
+    ports:
+      - '8080:8080'
+
+volumes:
+  michaels-astro-blog-db:
