@@ -1,6 +1,9 @@
 # build output
 dist/
 
+# data directory "db"
+data/
+
 # dependencies
 node_modules/
 
