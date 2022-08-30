@@ -32,7 +32,6 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          credentials: 'same-origin',
           body: JSON.stringify(Object.fromEntries(formData.entries()))
         }).then((res) => console.log('res', res));
       });
