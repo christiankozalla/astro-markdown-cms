@@ -10,7 +10,7 @@ export async function authenticationHandler(req, res, next) {
     const sessionIsValid = await validateSession(cookie);
 
     if (sessionIsValid) {
-      return next();
+      return next(); // to '/admin'
     } else {
       return res.redirect('/admin/login');
     }

@@ -7,3 +7,7 @@ export function checkExistingUser(email, list) {
 export function getSession(email, list) {
   return list.split('\n').find((entry) => entry.startsWith(email));
 }
+
+export function getUser(email, list) {
+  return list.split('\n').find((entry) => entry.startsWith(email));
+}
