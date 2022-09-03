@@ -2,16 +2,21 @@ import express from 'express';
 import { join } from 'path';
 import { readFile, appendFile } from 'node:fs/promises';
 import { encrypt, decrypt } from './lib/hash.mjs';
-import { checkExistingUser, getUser } from './lib/helpers.mjs';
+import {
+  checkExistingUser,
+  getUser,
+  base64,
+  csv,
+  createExpiryDate,
+  createSession
+} from './lib/helpers.mjs';
+import { login, logout } from './lib/db-operations.mjs';
 import { authenticationHandler } from './lib/auth.mjs';
 
 const cmsRouter = express.Router();
 
-// cmsRouter.use(authenticationHandler);
-
 // all paths are relative to '/admin'
 cmsRouter.get('/', authenticationHandler, (req, res, next) => {
-  // return res.render();
   return res.send('<h1>Hello in a CMS</h1>');
 });
 
@@ -35,8 +40,9 @@ cmsRouter.post('/register', async (req, res, next) => {
     return res.status(409);
   } else {
     const encryptedPassword = encrypt(req.body.password);
+    // should login(email) do create session instead and return the session?
     const expiryDate = createExpiryDate();
-    const session = createSession(req.body.email, expiryDate);
+    const session = createSession(base64(req.body.email), expiryDate);
 
     const appendUser = appendFile(
       join(process.cwd(), 'data', 'cms', 'users.txt'),
@@ -48,11 +54,7 @@ cmsRouter.post('/register', async (req, res, next) => {
       { encoding: 'utf8' }
     );
 
-    const appendSession = appendFile(
-      join(process.cwd(), 'data', 'cms', 'sessions.txt'),
-      session,
-      { encoding: 'utf8' }
-    );
+    const appendSession = login(session);
 
     await Promise.allSettled([appendUser, appendSession]);
 
@@ -88,7 +90,13 @@ cmsRouter.post('/login', async (req, res, next) => {
 
     if (isPasswordValid) {
       const expiryDate = createExpiryDate();
-      const session = createSession(req.body.email, expiryDate);
+      const session = createSession(base64(req.body.email), expiryDate);
+
+      const sessions = await getSessions();
+      // deletes all sessions
+      await logout(base64(req.body.email), sessions);
+      await login(session);
+
       return res
         .status(200)
         .cookie(process.env.SESSION_NAME, session, {
@@ -102,32 +110,9 @@ cmsRouter.post('/login', async (req, res, next) => {
       return res.status(403);
     }
   } else {
-    console.log('Bad passord - unauthorized');
+    console.log('Bad password - unauthorized');
     return res.status(401);
   }
 });
-
-function csv(...strings) {
-  return strings.join(';') + '\n';
-}
-
-function randomString() {
-  return (Math.random() + 1).toString(36).substring(2);
-}
-
-function hasSemi(...strings) {
-  return strings.includes(';');
-}
-
-function createSession(email, expiryDate) {
-  return `${Buffer.from(email).toString('base64url')}:::${randomString()}:::${
-    expiryDate || createExpiryDate()
-  }`;
-}
-
-function createExpiryDate() {
-  const date = new Date();
-  return date.setDate(date.getDate() + 7);
-}
 
 export { cmsRouter };
