@@ -4,6 +4,8 @@ import 'dotenv/config';
 import { handler as ssrHandler } from './dist/server/entry.mjs';
 import { cmsRouter } from './cms/router.mjs';
 
+const PORT = process.env.PORT || 3000;
+
 const app = express();
 
 app.use(cookieParser());
@@ -13,4 +15,4 @@ app.use(express.static('dist/client/'));
 app.use(ssrHandler);
 app.use('/admin', cmsRouter);
 
-app.listen(8080);
+app.listen(PORT, () => console.log(`Listening on Port ${PORT}`));
