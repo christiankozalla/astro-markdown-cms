@@ -8,10 +8,10 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "cms-dev": "NODE_ENV=development npx nodemon server.mjs"
+    "cms-dev": "NODE_ENV=development npx nodemon server.mjs",
+    "prod": "npm run build && node server.mjs"
   },
   "devDependencies": {
-    "@astrojs/sitemap": "^1.0.0",
     "astro": "^1.1.0"
   },
   "dependencies": {
