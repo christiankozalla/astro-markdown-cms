@@ -8,9 +8,10 @@ import {
   base64,
   csv,
   createExpiryDate,
-  createSession
+  createSession,
+  hasSemi
 } from './lib/helpers.mjs';
-import { login, logout } from './lib/db-operations.mjs';
+import { login, logout, readSessions } from './lib/db-operations.mjs';
 import { authenticationHandler } from './lib/auth.mjs';
 
 const cmsRouter = express.Router();
@@ -42,7 +43,7 @@ cmsRouter.post('/register', async (req, res, next) => {
     const encryptedPassword = encrypt(req.body.password);
     // should login(email) do create session instead and return the session?
     const expiryDate = createExpiryDate();
-    const session = createSession(base64(req.body.email), expiryDate);
+    const session = createSession(req.body.email, expiryDate);
 
     const appendUser = appendFile(
       join(process.cwd(), 'data', 'cms', 'users.txt'),
@@ -90,11 +91,11 @@ cmsRouter.post('/login', async (req, res, next) => {
 
     if (isPasswordValid) {
       const expiryDate = createExpiryDate();
-      const session = createSession(base64(req.body.email), expiryDate);
+      const session = createSession(req.body.email, expiryDate);
 
-      const sessions = await getSessions();
-      // deletes all sessions
-      await logout(base64(req.body.email), sessions);
+      const sessions = await readSessions();
+      // deletes all sessions of this user
+      await logout(req.body.email, sessions);
       await login(session);
 
       return res

@@ -3,12 +3,14 @@ import { join } from 'node:path';
 import { purgeList } from './helpers.mjs';
 const sessionsPath = join(process.cwd(), 'data', 'cms', 'sessions.txt');
 
-export function getSession() {
-  return readFile(sessionsPath, { encoding: 'utf8' });
+export async function readSessions() {
+  const strings = await readFile(sessionsPath, { encoding: 'utf8' });
+  const sessions = strings.split("\n");
+  return sessions;
 }
 
 export function login(session) {
-  return appendFile(sessionsPath, session, { encoding: 'utf8' });
+  return appendFile(sessionsPath, "\n"+session+"\n", { encoding: 'utf8' });
 }
 
 // Delete all sessions with base64-encoded email

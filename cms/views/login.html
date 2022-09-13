@@ -34,7 +34,11 @@
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(Object.fromEntries(formData.entries()))
-        });
+        }).then((res) => {
+          if (res.status === 200) {
+            location.replace("/admin");
+          }
+        })
       });
     </script>
   </body>
