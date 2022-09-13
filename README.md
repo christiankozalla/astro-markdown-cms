@@ -2,7 +2,11 @@
 
 ## DB docs
 
-The Database consists of JSON files. `users.json` holds all user login data like the following exammple Structure
+The Database consists of JSON files.
+
+### Users
+
+`users.json` holds all user login data like the following exammple Structure
 
 ```json
 {
@@ -17,6 +21,21 @@ To ensure "findability" of records, we need to follow some conventions:
 
 1. The user's email will always be processed base-64 encoded. Not for security reasons, of course, but for string matching to find a record by email.
 2. So the client needs to send the email already base-64 encoded to the server, for convenience.
+
+
+### Sessions
+
+Sessions will be stored in `sessions.json`
+
+```json
+{
+  "base-64-encoded-email": {
+    "token": "full-session-cookie",
+    "validUntil": "ISOTimestamp"
+  }
+}
+```
+
 
 ## 🚀 Project Structure
 
