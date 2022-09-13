@@ -14,7 +14,7 @@ export function getUser(email, list) {
 
 export function purgeList(email, list) {
   if (Array.isArray(list)) {
-    return list.filter((entry) => !entry.startsWith(email));
+    return list.filter((entry) => !entry.startsWith(email)).filter(Boolean);
   } else {
     return [];
   }
