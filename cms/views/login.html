@@ -25,6 +25,9 @@
         if (!formData.get('email')) return;
         else if (!formData.get('password')) return;
 
+        const email = formData.get('email');
+        formData.set('email', btoa(email));
+
         fetch('/admin/login', {
           method: 'POST',
           headers: {
