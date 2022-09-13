@@ -1,24 +1,22 @@
 # Astro Starter Kit: Blog
 
+## DB docs
+
+The Database consists of JSON files. `users.json` holds all user login data like the following exammple Structure
+
+```json
+{
+  "base-64-encoded-email": {
+    "pw": { "iv": "some-hash", "content": "some-other-hash" },
+    "name": "Username"
+  }
+}
 ```
-npm init astro -- --template blog
-```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/blog)
+To ensure "findability" of records, we need to follow some conventions:
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-
-![blog](https://user-images.githubusercontent.com/4677417/186189140-4ef17aac-c3c9-4918-a8c2-ce86ba1bb394.png)
-
-Features:
-
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
+1. The user's email will always be processed base-64 encoded. Not for security reasons, of course, but for string matching to find a record by email.
+2. So the client needs to send the email already base-64 encoded to the server, for convenience.
 
 ## 🚀 Project Structure
 
