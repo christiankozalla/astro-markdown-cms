@@ -5,7 +5,6 @@ astro
 node_modules
 
 public
-src
 
 README.md
 Dockerfile.dev
