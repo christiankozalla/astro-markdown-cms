@@ -4,10 +4,7 @@ astro
 
 node_modules
 
-public
-
 README.md
 Dockerfile.dev
 Dockerfile
 docker-compose.yml
-
