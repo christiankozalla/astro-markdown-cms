@@ -8,6 +8,7 @@ public
 src
 
 README.md
-Dockefile
+Dockerfile.dev
+Dockerfile
 docker-compose.yml
 
