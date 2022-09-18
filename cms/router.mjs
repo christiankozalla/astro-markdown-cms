@@ -5,7 +5,6 @@ import { encrypt, decrypt } from './lib/hash.mjs';
 import {
   checkExistingUser,
   getUser,
-  base64,
   csv,
   createExpiryDate,
   createSession,
@@ -13,6 +12,8 @@ import {
 } from './lib/helpers.mjs';
 import { login, logout, readSessions } from './lib/db-operations.mjs';
 import { authenticationHandler } from './lib/auth.mjs';
+import initDb from './lib/init-db.mjs';
+initDb(); // creates files
 
 const cmsRouter = express.Router();
 

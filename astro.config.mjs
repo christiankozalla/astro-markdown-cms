@@ -5,5 +5,6 @@ import node from '@astrojs/node';
 export default defineConfig({
   site: 'https://example.com',
   output: 'server',
-  adapter: node()
+  adapter: node(),
+  outDir: './astro'
 });
