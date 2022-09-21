@@ -4,12 +4,18 @@
 import '../styles/global.css';
 
 export interface Props {
-	title: string;
-	description: string;
-	image?: string;
+  title: string;
+  description: string;
+  image?: string;
+  permalink?: string;
 }
 
-const { title, description, image = '/placeholder-social.jpg' } = Astro.props;
+const {
+  title,
+  description,
+  image = '/placeholder-social.jpg',
+  permalink
+} = Astro.props;
 ---
 
 <!-- Global Metadata -->

@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { stripTrailingSlash } from '../../lib/helpers';
+import { getPost } from '../../lib/data-client';
+
+const slug = stripTrailingSlash(Astro.url.pathname).split('/').pop();
+const { post, error } = await getPost(slug);
+
+if (error) {
+  return Astro.redirect('/');
+}
+
+const permalink = `${Astro.site.href}${slug}`;
+---
+
+<BaseLayout
+  title={post.frontMatter.title}
+  description={post.frontMatter.description}
+  permalink={permalink}
+  current="blog"
+>
+  <header>
+    <p>{post.frontMatter.pubDate}</p>
+    <h1>{post.frontMatter.title}</h1>
+    <hr />
+  </header>
+  <div class="container">
+    <article class="content" set:html={post.html}></article>
+    <hr />
+  </div>
+</BaseLayout>
+
+<style>
+  header {
+    text-align: center;
+  }
+
+  header h1 {
+    margin-bottom: 0.7em;
+  }
+
+  header p {
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-family: var(--font-family-sans);
+    font-weight: 600;
+  }
+
+  header hr {
+    min-width: 100px;
+    width: 30%;
+  }
+</style>
