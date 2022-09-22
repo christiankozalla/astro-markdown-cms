@@ -17,13 +17,12 @@ const permalink = `${Astro.site.href}${slug}`;
   title={post.frontMatter.title}
   description={post.frontMatter.description}
   permalink={permalink}
-  current="blog"
 >
-  <header>
+  <section>
     <p>{post.frontMatter.pubDate}</p>
     <h1>{post.frontMatter.title}</h1>
     <hr />
-  </header>
+  </section>
   <div class="container">
     <article class="content" set:html={post.html}></article>
     <hr />
