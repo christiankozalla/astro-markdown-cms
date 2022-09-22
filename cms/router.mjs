@@ -3,6 +3,7 @@ import { join } from 'path';
 import { readFile, appendFile } from 'node:fs/promises';
 import { encrypt, decrypt } from './lib/hash.mjs';
 import {
+  hasSuperUser,
   checkExistingUser,
   getUser,
   csv,
@@ -36,8 +37,11 @@ cmsRouter.post('/register', async (req, res, next) => {
     join(process.cwd(), 'data', 'cms', 'users.txt'),
     { encoding: 'utf8' }
   );
-
-  if (checkExistingUser(req.body.email, users)) {
+  if (hasSuperUser(users)) {
+    console.log('Only a single user - the superuser - is allowed.');
+    return res.status(409);
+  }
+  else if (checkExistingUser(req.body.email, users)) {
     console.log('User already exists!', req.body.email);
     return res.status(409);
   } else {

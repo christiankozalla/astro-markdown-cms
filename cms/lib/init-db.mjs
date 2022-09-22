@@ -14,7 +14,7 @@ export default async () => {
       if (content.includes(file)) {
         console.log(`${file} already exits. Ok.`);
       } else {
-        console.log(`${file} does not exist, but needed for DB`);
+        console.log(`${file} does not exist, but needed for DB. Creating ${file}...`);
         await writeFile(path.join(dataDir, file), '', { encoding: 'utf8' });
       }
     }

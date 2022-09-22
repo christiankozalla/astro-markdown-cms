@@ -37,12 +37,15 @@ export function hasSemi(...strings) {
 }
 
 export function createSession(emailBase64, expiryDateMs) {
-  return `${emailBase64}:::${randomString()}:::${
-    expiryDateMs || createExpiryDate()
-  }`;
+  return `${emailBase64}:::${randomString()}:::${expiryDateMs || createExpiryDate()
+    }`;
 }
 
 export function createExpiryDate() {
   const date = new Date();
   return date.setDate(date.getDate() + 7);
+}
+
+export function hasSuperUser(users) {
+  return users.split('\n').filter(Boolean).length > 1;
 }
