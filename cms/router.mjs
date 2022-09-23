@@ -11,20 +11,38 @@ import {
   createSession,
   hasSemi
 } from './lib/helpers.mjs';
-import { login, logout, readSessions } from './lib/db-operations.mjs';
+import { login, logout, readSessions, listPosts, getPostBySlug } from './lib/db-operations.mjs';
 import { authenticationHandler } from './lib/auth.mjs';
 import initDb from './lib/init-db.mjs';
 initDb(); // creates files
 
+export const viewsBasePath = join(process.cwd(), 'cms', 'views');
 const cmsRouter = express.Router();
 
 // all paths are relative to '/admin'
-cmsRouter.get('/', authenticationHandler, (req, res, next) => {
-  return res.send('<h1>Hello in a CMS</h1>');
+cmsRouter.get('/', authenticationHandler, async (req, res) => {
+  const postList = await listPosts();
+  const data = { name: 'Michael', posts: postList };
+  return res.render(join(viewsBasePath, 'dashboard'), data);
+});
+
+cmsRouter.get('/:slug', authenticationHandler, async (req, res) => {
+  const fileName = `${req.params.slug}.md`;
+  const postList = await listPosts();
+  if (!postList.includes(fileName)) {
+    return res.status(404).send();
+  } else {
+    return res.render('post', { slug: req.params.slug });
+  }
+});
+
+cmsRouter.get('/posts/:slug', authenticationHandler, async (req, res) => {
+  const post = await getPostBySlug(req.params.slug + '.md');
+  return res.status(200).send(post);
 });
 
 cmsRouter.get('/register', (req, res, next) => {
-  return res.sendFile(join(process.cwd(), 'cms', 'views', 'register.html'));
+  return res.sendFile(join(viewsBasePath, 'register.html'));
 });
 
 cmsRouter.post('/register', async (req, res, next) => {

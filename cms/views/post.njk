@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artikel bearbeiten - Michaels Blog</title>
+  <link rel="stylesheet" href="https://unpkg.com/bytemd/dist/index.css" />
+  <script>
+    window.process = {
+      env: 'production'
+    };
+  </script>
+  <script src="https://unpkg.com/bytemd"></script>
+  <script src="https://unpkg.com/@bytemd/plugin-frontmatter"></script>
+</head>
+<body>
+  <div id="markdown-editor"></div>
+
+  <script type="module">
+    function createEditor(postData) {
+      return new bytemd.Editor({
+        target: document.getElementById('markdown-editor'),
+        props: {
+          plugins: [bytemdPluginFrontmatter()],
+          value: postData
+        }
+      });
+    }
+
+    fetch('/admin/posts/{{ slug }}', {
+      method: 'GET',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'text/plain'
+      }
+    }).then(function(response) { return response.text(); }).then(function(post) { return createEditor(post); }).then(function(bytemdEditor) {
+      bytemdEditor.$on('change', function(e){
+        bytemdEditor.$set({ value: e.detail.value });
+      });
+    }).catch(function(err) { console.error(err); });
+  </script>
+</body>
+</html>
