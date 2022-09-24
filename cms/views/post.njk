@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,18 +13,61 @@
     };
   </script>
   <script src="https://unpkg.com/bytemd"></script>
-  <script src="https://unpkg.com/@bytemd/plugin-frontmatter"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+
+    .bytemd {
+      height: calc(100vh - 100px);
+    }
+
+    #editor-controls {
+      margin-bottom: 24px;
+    }
+
+    #frontmatter span[id$='-display'] {
+      background-color: lightgrey;
+      border-radius: 4px;
+      margin-right: 8px;
+      padding: 4px 8px;
+    }
+
+    #form {
+      margin: 24px 0;
+    }
+
+    #form label {
+      text-transform: capitalize;
+      font-size: 1.2rem;
+    }
+
+    #form label+input {
+      margin: 0 12px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 1.2rem;
+    }
+  </style>
 </head>
+
 <body>
+  <div id="frontmatter">
+    <form id="form">
+    </form>
+  </div>
+  <div id="editor-controls">
+    <button id="print">Print</button>
+  </div>
   <div id="markdown-editor"></div>
 
   <script type="module">
-    function createEditor(postData) {
+    function createEditor(markdown) {
       return new bytemd.Editor({
         target: document.getElementById('markdown-editor'),
         props: {
-          plugins: [bytemdPluginFrontmatter()],
-          value: postData
+          plugins: [],
+          value: markdown
         }
       });
     }
@@ -32,13 +76,43 @@
       method: 'GET',
       credentials: 'same-origin',
       headers: {
-        'Content-Type': 'text/plain'
+        'Content-Type': 'application/javascript'
       }
-    }).then(function(response) { return response.text(); }).then(function(post) { return createEditor(post); }).then(function(bytemdEditor) {
-      bytemdEditor.$on('change', function(e){
+    }).then(function (response) { return response.json(); }).then(function (post) {
+      window.michaelsPost = post;
+      return createEditor(post.markdown);
+    }).then(function (bytemdEditor) {
+      window.bytemdEditor = bytemdEditor;
+      bytemdEditor.$on('change', function (e) {
         bytemdEditor.$set({ value: e.detail.value });
       });
-    }).catch(function(err) { console.error(err); });
+    }).catch(function (err) { console.error(err); }).finally(function () {
+      const formEl = document.getElementById('form');
+      Object.keys(window.michaelsPost.frontMatter).forEach((key) => {
+        const inputEl = document.createElement('input');
+        const labelEl = document.createElement('label'); const displayEl = document.createElement('span');
+        displayEl.innerText = window.michaelsPost.frontMatter[key];
+        displayEl.id = key + '-display';
+        labelEl.for = key;
+        labelEl.innerText = key;
+        inputEl.type = 'text';
+        inputEl.id = key;
+        inputEl.value = window.michaelsPost.frontMatter[key];
+        document.getElementById('frontmatter').prepend(displayEl);
+        formEl.append(labelEl, inputEl);
+      });
+
+      document.getElementById('print').addEventListener('click', function (e) {
+        console.log(window.michaelsPost)
+        console.log(window.bytemdEditor.$$.ctx[0]);
+      });
+
+      document.getElementById('form').addEventListener('input', function (e) {
+        window.michaelsPost.frontMatter[e.target.id] = e.target.value;
+        document.getElementById(`${e.target.id}-display`).innerText = e.target.value;
+      });
+    });
   </script>
 </body>
+
 </html>

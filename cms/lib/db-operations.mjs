@@ -1,6 +1,6 @@
 import { readFile, writeFile, appendFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { purgeList } from './helpers.mjs';
+import { parseFrontmatterAndMarkdown, purgeList } from './helpers.mjs';
 const sessionsPath = join(process.cwd(), 'data', 'cms', 'sessions.txt');
 const blogDir = join(process.cwd(), 'data', 'blog');
 
@@ -25,6 +25,14 @@ export async function listPosts() {
   return readdir(blogDir);
 }
 
+/** 
+ * Queries the file system for a markdown post
+ * parses frontmatter and markdown
+ * @param {string} fileName - The raw utf8 markdown file content
+ * @returns {Promise} - The parsed HTML and frontmatter
+ **/
 export async function getPostBySlug(fileName) {
-  return readFile(join(blogDir, fileName), { encoding: 'utf8' });
+  const raw = await readFile(join(blogDir, fileName), { encoding: 'utf8' });
+
+  return parseFrontmatterAndMarkdown(raw);
 } 

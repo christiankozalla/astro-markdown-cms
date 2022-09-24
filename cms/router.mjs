@@ -38,7 +38,7 @@ cmsRouter.get('/:slug', authenticationHandler, async (req, res) => {
 
 cmsRouter.get('/posts/:slug', authenticationHandler, async (req, res) => {
   const post = await getPostBySlug(req.params.slug + '.md');
-  return res.status(200).send(post);
+  return res.status(200).json(post);
 });
 
 cmsRouter.get('/register', (req, res, next) => {

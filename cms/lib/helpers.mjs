@@ -1,3 +1,5 @@
+import { marked } from 'marked';
+
 export function checkExistingUser(email, list) {
   const emailExits = list.split('\n').some((entry) => entry.startsWith(email));
 
@@ -48,4 +50,26 @@ export function createExpiryDate() {
 
 export function hasSuperUser(users) {
   return users.split('\n').filter(Boolean).length > 1;
+}
+
+export function parseFrontmatterAndMarkdown(raw) {
+  const regex = /---\n([\S\s]*?)\n---/g;
+  const result = regex.exec(raw);
+  if (result === null) {
+    return null;
+  } else {
+    const lines = result[1].split('\n').filter(Boolean).map((line) => {
+      const [key, value] = line.split(': ');
+      return `"${key}":${value}`;
+    });
+    const strigified = `{${lines.join(',')}}`;
+    const frontMatter = JSON.parse(strigified);
+    const markdown = raw.slice(raw.indexOf('---\n\n') + 5);
+    const html = marked.parse(markdown);
+    return {
+      html,
+      markdown,
+      frontMatter,
+    };
+  }
 }
