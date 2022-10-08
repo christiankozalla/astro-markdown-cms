@@ -1,0 +1,53 @@
+---
+import type { Frontmatter } from '../../types';
+
+const frontmatter: Frontmatter = Astro.props.frontmatter;
+---
+
+<div>
+  <form id="form">
+    {
+      Object.entries(frontmatter).map(([key, value]) => (
+        <div class="flex-child">
+          <label for={key}>{key}</label>
+          <input type="text" id={key} value={value} />
+        </div>
+      ))
+    }
+  </form>
+  <script>
+    const formEl = document.getElementById('form');
+    formEl.addEventListener('input', (e: any) => {
+      window.post.frontMatter[e.target.id] = e.target.value;
+    });
+    // @ts-ignore
+    document.getElementById('pubDate').disabled = true;
+  </script>
+  <style>
+    form {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .flex-child {
+      padding: 6px;
+      width: 33%;
+    }
+
+    label {
+      text-transform: capitalize;
+    }
+
+    input {
+      width: 100%;
+      margin-top: 4px;
+      padding: 6px 12px;
+    }
+
+    @media screen and (max-width: 600px) {
+      .flex-child {
+        width: 100%;
+      }
+    }
+  </style>
+</div>

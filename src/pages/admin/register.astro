@@ -4,16 +4,18 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CMS Login</title>
+    <title>CMS Anmeldung</title>
   </head>
   <body>
-    <h1>CMS Login</h1>
-    <p>Log dich in deinen Account ein und bearbeite den Blog.</p>
+    <h1>CMS Anmeldung</h1>
+    <p>Lege hier einen Admin-Account an.</p>
     <form>
       <label for="email">E-Mail</label>
       <input type="text" id="email" name="email" />
       <label for="password">Passwort</label>
       <input type="password" id="password" name="password" />
+      <label for="Name">Name</label>
+      <input type="text" name="name" id="name" />
       <input type="submit" />
     </form>
     <script type="module">
@@ -28,17 +30,17 @@
         const email = formData.get('email');
         formData.set('email', btoa(email));
 
-        fetch('/admin/login', {
+        fetch('/api/admin/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(Object.fromEntries(formData.entries()))
         }).then((res) => {
-          if (res.status === 200) {
-            location.replace("/admin");
+          if (res.status === 201) {
+            location.replace('/admin');
           }
-        })
+        });
       });
     </script>
   </body>

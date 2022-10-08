@@ -1,0 +1,33 @@
+---
+import { listPosts, getUsers } from '../../lib/db-client';
+import { authenticationHandler } from '../../lib/admin/auth';
+import { getUser, parseCookies } from '../../lib/admin/helpers';
+
+const cookies = Astro.request.headers.get('cookie');
+const { isValid, email } = await authenticationHandler(parseCookies(cookies));
+
+if (!isValid) {
+  return Astro.redirect('/admin/login');
+}
+
+const users = await getUsers();
+const name = getUser(email, users).split(';')[2] || 'Anonymous';
+const posts = await listPosts();
+---
+
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - Michaels Blog</title>
+  </head>
+  <body>
+    <h1>Willkommen {name}</h1>
+    <p>Schön, dass du da bist!<br />Hier ist eine Liste deiner Artikel:</p>
+    <ul>
+      {posts.map((post) => <li>{post}</li>)}
+    </ul>
+  </body>
+</html>
