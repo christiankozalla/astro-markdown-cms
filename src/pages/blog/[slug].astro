@@ -1,12 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { stripTrailingSlash } from '../../lib/helpers';
-import { getPost } from '../../lib/data-client';
+import { getPost } from '../../lib/db-client';
 
-const slug = stripTrailingSlash(Astro.url.pathname).split('/').pop();
+const slug = Astro.params.slug.toString(); // stripTrailingSlash(Astro.url.pathname).split('/').pop();
 const { post, error } = await getPost(slug);
 
 if (error) {
+  console.log(error);
   return Astro.redirect('/');
 }
 

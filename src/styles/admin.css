@@ -1,0 +1,33 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-size: 1.2rem;
+}
+
+input {
+  font-size: inherit;
+}
+
+button {
+  border-radius: 4px;
+  color: #fff;
+  border: none;
+  background-color: #3700B3;
+  width: 256px;
+  height: 48px;
+  letter-spacing: 1px;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+button:active,
+button:focus {
+  outline: 1px solid #3700B3;
+  outline-offset: 1px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
