@@ -9,9 +9,12 @@ body {
 
 input {
   font-size: inherit;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 1.2rem;
 }
 
-button {
+button, a {
   border-radius: 4px;
   color: #fff;
   border: none;
@@ -21,10 +24,14 @@ button {
   letter-spacing: 1px;
   font-size: inherit;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  line-height: 46px;
 }
 
 button:active,
-button:focus {
+button:focus, a:active, a:focus {
   outline: 1px solid #3700B3;
   outline-offset: 1px;
 }

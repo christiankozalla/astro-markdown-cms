@@ -36,6 +36,7 @@ export function logout(emailBase64: string, sessions: string[]) {
   });
 }
 
+// Display a list of published posts in the dashboard
 export async function listPosts() {
   const files = (await readdir(blogDir, { withFileTypes: true }))
     .filter((dirent) => dirent.isFile()).map((dirent) => dirent.name);
@@ -44,23 +45,28 @@ export async function listPosts() {
 }
 
 async function allPosts() {
-  return readdir(blogDir);
+  return Promise.all([
+    readdir(blogDir),
+    readdir(join(blogDir, "drafts")),
+  ]);
 }
-
 export async function getPost(
   id: string,
 ): Promise<{ post: Post | null; error: null | Error }> {
   const fileName = `${id}.md`;
-  const posts = await allPosts();
-  if (posts.includes(fileName)) {
+  const [posts, drafts] = await allPosts();
+  if (Array.isArray(posts) && posts.includes(fileName)) {
     const raw = await readFile(join(blogDir, fileName), {
       encoding: "utf8",
     });
     const post = parseFrontmatterAndMarkdown(raw);
-    return {
-      post,
-      error: null,
-    };
+    return { post, error: null };
+  } else if (Array.isArray(drafts) && drafts.includes(fileName)) {
+    const raw = await readFile(join(blogDir, "drafts", fileName), {
+      encoding: "utf8",
+    });
+    const post = parseFrontmatterAndMarkdown(raw);
+    return { post, error: null };
   } else {
     return {
       post: null,

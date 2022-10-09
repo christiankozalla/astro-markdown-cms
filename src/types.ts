@@ -9,7 +9,7 @@ declare global {
 }
 
 export type Post = {
-  html: string;
+  html?: string;
   markdown: string;
   frontMatter: Frontmatter;
 };
@@ -20,6 +20,7 @@ export type Frontmatter = {
   pubDate: string;
   heroImage: string;
   layout?: string;
+  updateDate?: string;
 };
 
 export type User = {

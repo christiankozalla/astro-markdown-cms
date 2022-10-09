@@ -1,4 +1,5 @@
 ---
+import '../../styles/admin.css';
 import { listPosts, getUsers } from '../../lib/db-client';
 import { authenticationHandler } from '../../lib/admin/auth';
 import { getUser, parseCookies } from '../../lib/admin/helpers';
@@ -24,10 +25,34 @@ const posts = await listPosts();
     <title>Admin Dashboard - Michaels Blog</title>
   </head>
   <body>
-    <h1>Willkommen {name}</h1>
-    <p>Schön, dass du da bist!<br />Hier ist eine Liste deiner Artikel:</p>
-    <ul>
-      {posts.map((post) => <li>{post}</li>)}
-    </ul>
+    <main>
+      <h1>Willkommen {name}</h1>
+      <p>Schön, dass du da bist!<br />Hier ist eine Liste deiner Artikel:</p>
+      <ul>
+        {posts.map((post) => <li>{post}</li>)}
+      </ul>
+    </main>
+    <aside>
+      <h2>Quick Pick</h2>
+      <div class="new-post">
+        <a href="/admin/posts/new" class="new-post">Neuer Artikel</a>
+      </div>
+    </aside>
+    <style>
+      body {
+        display: flex;
+      }
+
+      main {
+        flex: 3 1 60%;
+      }
+
+      aside {
+        flex: 1 2 30%;
+        padding: 12px;
+        border: 2px solid lightgray;
+        border-radius: 6px;
+      }
+    </style>
   </body>
 </html>
