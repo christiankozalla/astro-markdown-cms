@@ -29,7 +29,20 @@ const posts = await listPosts();
       <h1>Willkommen {name}</h1>
       <p>Schön, dass du da bist!<br />Hier ist eine Liste deiner Artikel:</p>
       <ul>
-        {posts.map((post) => <li>{post}</li>)}
+        {
+          posts.map((post) => (
+            <li style="margin-bottom: 12px">
+              {post}
+              <a
+                class="ghost"
+                style="width: fit-content; padding: 0 8px; height: 32px; line-height: 28px"
+                href={'/admin/' + post.slice(0, post.indexOf('.md'))}
+              >
+                Bearbeiten
+              </a>
+            </li>
+          ))
+        }
       </ul>
     </main>
     <aside>

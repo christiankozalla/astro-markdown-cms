@@ -39,3 +39,9 @@ button:focus, a:active, a:focus {
 button:disabled {
   cursor: not-allowed;
 }
+
+a.ghost {
+  background-color: transparent;
+  color: #3700B3;
+  border: 1px solid #3700B3;
+}
