@@ -37,7 +37,10 @@ export function logout(emailBase64: string, sessions: string[]) {
 }
 
 export async function listPosts() {
-  return readdir(blogDir);
+  const files = (await readdir(blogDir, { withFileTypes: true }))
+    .filter((dirent) => dirent.isFile()).map((dirent) => dirent.name);
+
+  return files;
 }
 
 async function allPosts() {
