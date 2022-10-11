@@ -2,6 +2,8 @@
 
 ## DB docs
 
+The following JSON structure was initially planned, but is not implemented yet! The Database rather consists of txt-files, that hold the records line-by-line.
+
 The Database consists of JSON files.
 
 ### Users

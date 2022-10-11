@@ -1,3 +1,4 @@
+import type { Post } from "../../types";
 export type Cookie = Record<string, string>;
 
 export function checkExistingUser(email: string, list: string) {
@@ -57,4 +58,21 @@ export function parseCookies(cookies: string): Cookie[] {
   if (!cookies) return [];
   const arrayLike = cookies.split(";").map((cookie) => cookie.split("="));
   return arrayLike.map(([key, value]) => ({ [key]: value }));
+}
+
+export function emptyPost(): Post {
+  return {
+    markdown: "",
+    frontMatter: {
+      title: "",
+      description: "",
+      heroImage: "",
+      pubDate: "",
+      layout: "../../layouts/BlogPost.astro",
+    },
+  };
+}
+
+export function slugify(title: string): string {
+  return title.replaceAll(" ", "-").toLowerCase();
 }
