@@ -81,9 +81,15 @@ export async function writePost(id: string, post: Post, isDraft: boolean) {
   if (isDraft) {
     destination = join(blogDir, "drafts", fileName);
   } else {
-    destination = join(blogDir, fileName);
-    // and delete the draft before publishing
-    await unlink(join(blogDir, "drafts", fileName));
+    try {
+      destination = join(blogDir, fileName);
+      const draftUrl = join(blogDir, "drafts", fileName);
+      // and delete the draft before publishing
+      await unlink(draftUrl);
+    } catch (err) {
+      // file does not exist - log and move on
+      console.log(err.message);
+    }
   }
   return writeFile(destination, serializePost(post), { encoding: "utf8" });
 }
