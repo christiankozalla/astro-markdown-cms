@@ -1,5 +1,6 @@
 ---
 import '../../styles/admin.css';
+import Notification from '../../components/admin/Notification.astro';
 import { getPost } from '../../lib/db-client';
 import FrontMatter from '../../components/admin/FrontMatter.astro';
 import { authenticationHandler } from '../../lib/admin/auth';
@@ -77,6 +78,12 @@ if (error !== null) {
       <button id="publish">Veröffentlichen</button>
     </div>
     <div id="markdown-editor"></div>
+    <Notification
+      id="success"
+      headline="Hurraa!"
+      body="Die Aktion war erfolgreich :D"
+      cta="Weiter"
+    />
     <script is:inline define:vars={{ post, slug }}>
       window.post = post;
       const editor = new bytemd.Editor({
@@ -109,8 +116,9 @@ if (error !== null) {
           })
         }).then((response) => {
           if (response.status === 201) {
-            e.target.disabled = false;
+            success.style.display = 'block';
           }
+          e.target.disabled = false;
         });
       });
     </script>
