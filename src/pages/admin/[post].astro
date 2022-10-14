@@ -36,39 +36,6 @@ if (error !== null) {
       };
     </script>
     <script is:inline src="https://unpkg.com/bytemd"></script>
-    <style>
-      body {
-        font-family: sans-serif;
-      }
-
-      .bytemd {
-        height: calc(100vh - 100px);
-      }
-
-      #editor-controls {
-        margin-bottom: 24px;
-      }
-
-      #frontmatter span[id$='-display'] {
-        background-color: lightgrey;
-        border-radius: 4px;
-        margin-right: 8px;
-        padding: 4px 8px;
-      }
-
-      #form {
-        margin: 24px 0;
-      }
-
-      #form label {
-        text-transform: capitalize;
-        font-size: 1.2rem;
-      }
-
-      #form label + input {
-        margin: 0 12px;
-      }
-    </style>
   </head>
 
   <body>
@@ -116,11 +83,41 @@ if (error !== null) {
           })
         }).then((response) => {
           if (response.status === 201) {
+            // show notification
             success.style.display = 'block';
           }
           e.target.disabled = false;
         });
       });
     </script>
+    <style>
+      body {
+        font-family: sans-serif;
+      }
+
+      #editor-controls {
+        margin-bottom: 24px;
+      }
+
+      #frontmatter span[id$='-display'] {
+        background-color: lightgrey;
+        border-radius: 4px;
+        margin-right: 8px;
+        padding: 4px 8px;
+      }
+
+      #form {
+        margin: 24px 0;
+      }
+
+      #form label {
+        text-transform: capitalize;
+        font-size: 1.2rem;
+      }
+
+      #form label + input {
+        margin: 0 12px;
+      }
+    </style>
   </body>
 </html>

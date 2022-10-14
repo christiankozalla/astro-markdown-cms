@@ -45,3 +45,7 @@ a.ghost {
   color: #3700B3;
   border: 1px solid #3700B3;
 }
+
+#markdown-editor .bytemd {
+  height: calc(100vh - 270px);
+}
