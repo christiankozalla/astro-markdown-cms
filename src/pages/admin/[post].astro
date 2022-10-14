@@ -40,7 +40,7 @@ if (error !== null) {
 
   <body>
     <FrontMatter frontmatter={post.frontMatter} />
-    <div id="editor-controls">
+    <div id="editor-controls" data-noop>
       <button id="draft" data-draft="true">Entwurf speichern</button>
       <button id="publish">Veröffentlichen</button>
     </div>
@@ -67,6 +67,7 @@ if (error !== null) {
 
       const editorControls = document.getElementById('editor-controls');
       editorControls.addEventListener('click', (e) => {
+        if (e.target.dataset.noop !== undefined) return;
         e.target.disabled = true;
         const route = `/api/admin/posts/${slug}${
           e.target.dataset.draft ? '?draft' : ''
@@ -96,6 +97,7 @@ if (error !== null) {
       }
 
       #editor-controls {
+        display: inline-block;
         margin-bottom: 24px;
       }
 
