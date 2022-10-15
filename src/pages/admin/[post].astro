@@ -39,7 +39,12 @@ if (error !== null) {
   </head>
 
   <body>
-    <FrontMatter frontmatter={post.frontMatter} />
+    <FrontMatter frontmatter={post.frontMatter}>
+      <a class="back-to-dashboard" href="/admin">&#129044;</a><h1>
+        Meta Daten deines Artikels
+      </h1>
+    </FrontMatter>
+
     <div id="editor-controls" data-noop>
       <button id="draft" data-draft="true">Entwurf speichern</button>
       <button id="publish">Veröffentlichen</button>
@@ -66,7 +71,8 @@ if (error !== null) {
       });
 
       const editorControls = document.getElementById('editor-controls');
-      editorControls.addEventListener('click', (e) => {
+      editorControls.addEventListener('click', savePost);
+      function savePost(e) {
         if (e.target.dataset.noop !== undefined) return;
         e.target.disabled = true;
         const route = `/api/admin/posts/${slug}${
@@ -89,7 +95,7 @@ if (error !== null) {
           }
           e.target.disabled = false;
         });
-      });
+      }
     </script>
     <style>
       body {
@@ -119,6 +125,20 @@ if (error !== null) {
 
       #form label + input {
         margin: 0 12px;
+      }
+
+      .back-to-dashboard {
+        width: 60px;
+        font-size: 2rem;
+        display: inline-block;
+      }
+      h1 {
+        display: inline-block;
+        margin: 6px 0 0 12px;
+      }
+
+      :global(#markdown-editor .bytemd) {
+        height: calc(100vh - 300px);
       }
     </style>
   </body>
