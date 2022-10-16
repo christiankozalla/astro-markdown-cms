@@ -40,9 +40,11 @@ if (error !== null) {
 
   <body>
     <FrontMatter frontmatter={post.frontMatter}>
-      <a class="back-to-dashboard" href="/admin">&#129044;</a><h1>
-        Meta Daten deines Artikels
-      </h1>
+      <a
+        class="back-to-dashboard"
+        href="/admin"
+        data-draft="save-draft-before-routing">&#129044;</a
+      ><h1>Meta Daten deines Artikels</h1>
     </FrontMatter>
 
     <div id="editor-controls" data-noop>
@@ -72,6 +74,16 @@ if (error !== null) {
 
       const editorControls = document.getElementById('editor-controls');
       editorControls.addEventListener('click', savePost);
+      document
+        .querySelector('.back-to-dashboard')
+        .addEventListener('click', function (e) {
+          if (!e.defaultPrevented) {
+            e.preventDefault();
+            e.hideNotification = true;
+            savePost(e);
+            e.target.dispatchEvent(new Event('click'));
+          }
+        });
       function savePost(e) {
         if (e.target.dataset.noop !== undefined) return;
         e.target.disabled = true;
@@ -89,7 +101,7 @@ if (error !== null) {
             frontMatter: window.post.frontMatter
           })
         }).then((response) => {
-          if (response.status === 201) {
+          if (response.status === 201 && !e.hideNotification) {
             // show notification
             success.style.display = 'block';
           }
