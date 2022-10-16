@@ -32,14 +32,16 @@ const posts = await listPosts();
         {
           posts.map((post) => (
             <li style="margin-bottom: 12px">
-              {post}
+              {post.fileName}
               <a
                 class="ghost"
                 style="width: fit-content; padding: 0 8px; height: 32px; line-height: 28px"
-                href={'/admin/' + post.slice(0, post.indexOf('.md'))}
+                href={'/admin/' + post.slug}
               >
                 Bearbeiten
               </a>
+              hat Entwurf: {post.hasDraft ? 'ja' : 'nein'}
+              hat Live: {post.hasPublished ? 'ja' : 'nein'}
             </li>
           ))
         }

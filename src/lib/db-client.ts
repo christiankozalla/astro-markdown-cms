@@ -36,15 +36,23 @@ export function logout(emailBase64: string, sessions: string[]) {
   });
 }
 
-// Display a list of published posts in the dashboard
+// // Display a list of published and draft posts in the dashboard
 export async function listPosts() {
-  const files = (await readdir(blogDir, { withFileTypes: true }))
-    .filter((dirent) => dirent.isFile()).map((dirent) => dirent.name);
-
-  return files;
+  const [published, drafts] = await allPosts();
+  // please forgive me...
+  published.splice(published.indexOf("drafts"), 1);
+  const posts = Array.from(new Set([...published, ...drafts])).map((file) => {
+    return {
+      fileName: file,
+      slug: file.slice(0, file.indexOf(".md")),
+      hasPublished: published.includes(file),
+      hasDraft: drafts.includes(file),
+    };
+  });
+  return posts;
 }
 
-async function allPosts() {
+export async function allPosts() {
   return Promise.all([
     readdir(blogDir),
     readdir(join(blogDir, "drafts")),
