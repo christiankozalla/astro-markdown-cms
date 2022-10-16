@@ -14,7 +14,9 @@ if (!isValid) {
 }
 
 const slug = Astro.params.post.toString();
-const { post, error } = await getPost(slug);
+
+const isDraft = Astro.url.searchParams.has('draft');
+const { post, error, hasAlternative } = await getPost(slug, isDraft);
 
 if (error !== null) {
   console.log(error);
@@ -44,7 +46,17 @@ if (error !== null) {
         class="back-to-dashboard"
         href="/admin"
         data-draft="save-draft-before-routing">&#129044;</a
-      ><h1>Meta Daten deines Artikels</h1>
+      ><h1>Meta-Daten</h1>
+      <div id="post-status">
+        Status: {isDraft ? <span>Entwurf</span> : <span>Live</span>}
+        {
+          hasAlternative && (
+            <a class="text" href={hasAlternative}>
+              {isDraft ? 'Zur veröffentlichten Version' : 'Zum Entwurf'}
+            </a>
+          )
+        }
+      </div>
     </FrontMatter>
 
     <div id="editor-controls" data-noop>
@@ -117,6 +129,11 @@ if (error !== null) {
       #editor-controls {
         display: inline-block;
         margin-bottom: 24px;
+      }
+
+      #post-status {
+        display: inline-block;
+        padding-left: 1rem;
       }
 
       #frontmatter span[id$='-display'] {

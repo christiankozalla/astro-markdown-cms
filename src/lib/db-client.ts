@@ -52,27 +52,35 @@ async function allPosts() {
 }
 export async function getPost(
   id: string,
-): Promise<{ post: Post | null; error: null | Error }> {
+  draft = false,
+): Promise<
+  { post: Post | null; error: null | Error; hasAlternative: string }
+> {
   const fileName = `${id}.md`;
   const [posts, drafts] = await allPosts();
+  const response = { post: null, error: null, hasAlternative: "" };
   if (Array.isArray(posts) && posts.includes(fileName)) {
     const raw = await readFile(join(blogDir, fileName), {
       encoding: "utf8",
     });
-    const post = parseFrontmatterAndMarkdown(raw);
-    return { post, error: null };
-  } else if (Array.isArray(drafts) && drafts.includes(fileName)) {
-    const raw = await readFile(join(blogDir, "drafts", fileName), {
-      encoding: "utf8",
-    });
-    const post = parseFrontmatterAndMarkdown(raw);
-    return { post, error: null };
-  } else {
-    return {
-      post: null,
-      error: new Error(`${fileName} - Blog post not found.`),
-    };
+    response.post = parseFrontmatterAndMarkdown(raw);
   }
+  if (Array.isArray(drafts) && drafts.includes(fileName)) {
+    if (draft) {
+      // alternative is the published post
+      response.hasAlternative = `/admin/${id}`;
+      const raw = await readFile(join(blogDir, "drafts", fileName), {
+        encoding: "utf8",
+      });
+      response.post = parseFrontmatterAndMarkdown(raw);
+    } else {
+      response.hasAlternative = `/admin/${id}?draft`;
+    }
+  }
+  if (response.post === null) {
+    response.error = new Error(`${fileName} - Blog post not found.`);
+  }
+  return response;
 }
 
 export async function writePost(id: string, post: Post, isDraft: boolean) {
