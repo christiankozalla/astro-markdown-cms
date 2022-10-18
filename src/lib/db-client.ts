@@ -36,15 +36,23 @@ export function logout(emailBase64: string, sessions: string[]) {
   });
 }
 
-// Display a list of published posts in the dashboard
+// // Display a list of published and draft posts in the dashboard
 export async function listPosts() {
-  const files = (await readdir(blogDir, { withFileTypes: true }))
-    .filter((dirent) => dirent.isFile()).map((dirent) => dirent.name);
-
-  return files;
+  const [published, drafts] = await allPosts();
+  // please forgive me...
+  published.splice(published.indexOf("drafts"), 1);
+  const posts = Array.from(new Set([...published, ...drafts])).map((file) => {
+    return {
+      fileName: file,
+      slug: file.slice(0, file.indexOf(".md")),
+      hasPublished: published.includes(file),
+      hasDraft: drafts.includes(file),
+    };
+  });
+  return posts;
 }
 
-async function allPosts() {
+export async function allPosts() {
   return Promise.all([
     readdir(blogDir),
     readdir(join(blogDir, "drafts")),
@@ -52,27 +60,35 @@ async function allPosts() {
 }
 export async function getPost(
   id: string,
-): Promise<{ post: Post | null; error: null | Error }> {
+  draft = false,
+): Promise<
+  { post: Post | null; error: null | Error; hasAlternative: string }
+> {
   const fileName = `${id}.md`;
   const [posts, drafts] = await allPosts();
+  const response = { post: null, error: null, hasAlternative: "" };
   if (Array.isArray(posts) && posts.includes(fileName)) {
     const raw = await readFile(join(blogDir, fileName), {
       encoding: "utf8",
     });
-    const post = parseFrontmatterAndMarkdown(raw);
-    return { post, error: null };
-  } else if (Array.isArray(drafts) && drafts.includes(fileName)) {
-    const raw = await readFile(join(blogDir, "drafts", fileName), {
-      encoding: "utf8",
-    });
-    const post = parseFrontmatterAndMarkdown(raw);
-    return { post, error: null };
-  } else {
-    return {
-      post: null,
-      error: new Error(`${fileName} - Blog post not found.`),
-    };
+    response.post = parseFrontmatterAndMarkdown(raw);
   }
+  if (Array.isArray(drafts) && drafts.includes(fileName)) {
+    if (draft) {
+      // alternative is the published post
+      response.hasAlternative = `/admin/${id}`;
+      const raw = await readFile(join(blogDir, "drafts", fileName), {
+        encoding: "utf8",
+      });
+      response.post = parseFrontmatterAndMarkdown(raw);
+    } else {
+      response.hasAlternative = `/admin/${id}?draft`;
+    }
+  }
+  if (response.post === null) {
+    response.error = new Error(`${fileName} - Blog post not found.`);
+  }
+  return response;
 }
 
 export async function writePost(id: string, post: Post, isDraft: boolean) {
@@ -81,9 +97,15 @@ export async function writePost(id: string, post: Post, isDraft: boolean) {
   if (isDraft) {
     destination = join(blogDir, "drafts", fileName);
   } else {
-    destination = join(blogDir, fileName);
-    // and delete the draft before publishing
-    await unlink(join(blogDir, "drafts", fileName));
+    try {
+      destination = join(blogDir, fileName);
+      const draftUrl = join(blogDir, "drafts", fileName);
+      // and delete the draft before publishing
+      await unlink(draftUrl);
+    } catch (err) {
+      // file does not exist - log and move on
+      console.log(err.message);
+    }
   }
   return writeFile(destination, serializePost(post), { encoding: "utf8" });
 }

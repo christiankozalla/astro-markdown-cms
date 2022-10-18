@@ -1,5 +1,6 @@
 ---
 import '../../styles/admin.css';
+import Notification from '../../components/admin/Notification.astro';
 import { getPost } from '../../lib/db-client';
 import FrontMatter from '../../components/admin/FrontMatter.astro';
 import { authenticationHandler } from '../../lib/admin/auth';
@@ -13,7 +14,9 @@ if (!isValid) {
 }
 
 const slug = Astro.params.post.toString();
-const { post, error } = await getPost(slug);
+
+const isDraft = Astro.url.searchParams.has('draft');
+const { post, error, hasAlternative } = await getPost(slug, isDraft);
 
 if (error !== null) {
   console.log(error);
@@ -27,6 +30,7 @@ if (error !== null) {
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Artikel bearbeiten - Michaels Blog</title>
     <link rel="stylesheet" href="https://unpkg.com/bytemd/dist/index.css" />
     <script is:inline>
@@ -35,17 +39,102 @@ if (error !== null) {
       };
     </script>
     <script is:inline src="https://unpkg.com/bytemd"></script>
+  </head>
+
+  <body>
+    <FrontMatter frontmatter={post.frontMatter}>
+      <a
+        class="back-to-dashboard"
+        href="/admin"
+        data-draft="save-draft-before-routing">&#129044;</a
+      ><h1>Meta-Daten</h1>
+      <div id="post-status">
+        Status: {isDraft ? <span>Entwurf</span> : <span>Live</span>}
+        {
+          hasAlternative && (
+            <a class="text" href={hasAlternative}>
+              {isDraft ? 'Zur veröffentlichten Version' : 'Zum Entwurf'}
+            </a>
+          )
+        }
+      </div>
+    </FrontMatter>
+
+    <div id="editor-controls" data-noop>
+      <button id="draft" data-draft="true">Entwurf speichern</button>
+      <button id="publish">Veröffentlichen</button>
+    </div>
+    <div id="markdown-editor"></div>
+    <Notification
+      id="success"
+      headline="Hurraa!"
+      body="Die Aktion war erfolgreich :D"
+      cta="Weiter"
+    />
+    <script is:inline define:vars={{ post, slug }}>
+      window.post = post;
+      const editor = new bytemd.Editor({
+        target: document.getElementById('markdown-editor'),
+        props: {
+          value: post.markdown
+        }
+      });
+
+      editor.$on('change', (e) => {
+        post.markdown = e.detail.value;
+        editor.$set({ value: e.detail.value });
+      });
+
+      const editorControls = document.getElementById('editor-controls');
+      editorControls.addEventListener('click', savePost);
+      document
+        .querySelector('.back-to-dashboard')
+        .addEventListener('click', function (e) {
+          if (!e.defaultPrevented) {
+            e.preventDefault();
+            e.hideNotification = true;
+            savePost(e);
+            e.target.dispatchEvent(new Event('click'));
+          }
+        });
+      function savePost(e) {
+        if (e.target.dataset.noop !== undefined) return;
+        e.target.disabled = true;
+        const route = `/api/admin/posts/${slug}${
+          e.target.dataset.draft ? '?draft' : ''
+        }`;
+
+        fetch(route, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            markdown: window.post.markdown,
+            frontMatter: window.post.frontMatter
+          })
+        }).then((response) => {
+          if (response.status === 201 && !e.hideNotification) {
+            // show notification
+            success.style.display = 'block';
+          }
+          e.target.disabled = false;
+        });
+      }
+    </script>
     <style>
       body {
         font-family: sans-serif;
       }
 
-      .bytemd {
-        height: calc(100vh - 100px);
+      #editor-controls {
+        display: inline-block;
+        margin-bottom: 24px;
       }
 
-      #editor-controls {
-        margin-bottom: 24px;
+      #post-status {
+        display: inline-block;
+        padding-left: 1rem;
       }
 
       #frontmatter span[id$='-display'] {
@@ -67,52 +156,20 @@ if (error !== null) {
       #form label + input {
         margin: 0 12px;
       }
+
+      .back-to-dashboard {
+        width: 60px;
+        font-size: 2rem;
+        display: inline-block;
+      }
+      h1 {
+        display: inline-block;
+        margin: 6px 0 0 12px;
+      }
+
+      :global(#markdown-editor .bytemd) {
+        height: calc(100vh - 300px);
+      }
     </style>
-  </head>
-
-  <body>
-    <FrontMatter frontmatter={post.frontMatter} />
-    <div id="editor-controls">
-      <button id="draft" data-draft="true">Entwurf speichern</button>
-      <button id="publish">Veröffentlichen</button>
-    </div>
-    <div id="markdown-editor"></div>
-    <script is:inline define:vars={{ post, slug }}>
-      window.post = post;
-      const editor = new bytemd.Editor({
-        target: document.getElementById('markdown-editor'),
-        props: {
-          value: post.markdown
-        }
-      });
-
-      editor.$on('change', (e) => {
-        post.markdown = e.detail.value;
-        editor.$set({ value: e.detail.value });
-      });
-
-      const editorControls = document.getElementById('editor-controls');
-      editorControls.addEventListener('click', (e) => {
-        e.target.disabled = true;
-        const route = `/api/admin/posts/${slug}${
-          e.target.dataset.draft ? '?draft' : ''
-        }`;
-
-        fetch(route, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            markdown: window.post.markdown,
-            frontMatter: window.post.frontMatter
-          })
-        }).then((response) => {
-          if (response.status === 201) {
-            e.target.disabled = false;
-          }
-        });
-      });
-    </script>
   </body>
 </html>

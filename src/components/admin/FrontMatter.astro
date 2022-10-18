@@ -5,6 +5,7 @@ const frontmatter: Frontmatter = Astro.props.frontmatter;
 ---
 
 <div>
+  <slot></slot>
   <form id="form">
     {
       Object.entries(frontmatter).map(([key, value]) => (
