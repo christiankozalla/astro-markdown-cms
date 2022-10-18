@@ -22,6 +22,7 @@ const posts = await listPosts();
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Admin Dashboard - Michaels Blog</title>
   </head>
   <body>
@@ -33,15 +34,12 @@ const posts = await listPosts();
           posts.map((post) => (
             <li style="margin-bottom: 12px">
               {post.fileName}
-              <a
-                class="ghost"
-                style="width: fit-content; padding: 0 8px; height: 32px; line-height: 28px"
-                href={'/admin/' + post.slug}
-              >
+              <a class="ghost edit-link" href={'/admin/' + post.slug}>
                 Bearbeiten
               </a>
-              hat Entwurf: {post.hasDraft ? 'ja' : 'nein'}
-              hat Live: {post.hasPublished ? 'ja' : 'nein'}
+              <a class="ghost edit-link" href={'/admin' + post.slug + '?draft'}>
+                Entwurf bearbeiten
+              </a>
             </li>
           ))
         }
@@ -67,6 +65,13 @@ const posts = await listPosts();
         padding: 12px;
         border: 2px solid lightgray;
         border-radius: 6px;
+      }
+
+      .edit-link {
+        width: fit-content;
+        padding: 0 8px;
+        height: 32px;
+        line-height: 28px;
       }
     </style>
   </body>
