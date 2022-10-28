@@ -5,6 +5,10 @@ import node from '@astrojs/node';
 export default defineConfig({
   site: 'https://example.com',
   output: 'server',
-  adapter: node(),
-  outDir: './astro'
+  adapter: node({ mode: 'standalone' }),
+  outDir: './astro',
+  server: {
+    host: true,
+    port: 3000
+  }
 });
