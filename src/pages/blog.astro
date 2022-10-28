@@ -1,5 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { listPosts } from '../lib/db-client';
+
+const posts = (await listPosts()).filter((post) => post.hasPublished);
 ---
 
 <BaseLayout
@@ -8,4 +11,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   permalink={Astro.site.href + 'blog'}
 >
   <h1>Blog Übersicht</h1>
+  <ul>
+    {
+      posts.map((post) => (
+        <li>
+          <a href={'/blog/' + post.slug}>{post.fileName}</a>
+        </li>
+      ))
+    }
+  </ul>
 </BaseLayout>
