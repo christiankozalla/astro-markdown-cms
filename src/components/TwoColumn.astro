@@ -1,0 +1,18 @@
+<section>
+  <slot name="left" />
+  <slot name="right" />
+  <style>
+    section {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 24px;
+    }
+
+    @media (max-width: 560px) {
+      section {
+        flex-direction: column;
+      }
+    }
+  </style>
+</section>
