@@ -1,19 +1,19 @@
 ---
 import '../../styles/admin.css';
-import { listPosts, getUsers } from '../../lib/db-client';
-import { authenticationHandler } from '../../lib/admin/auth';
-import { getUser, parseCookies } from '../../lib/admin/helpers';
+import { dbClient, authenticationHandler, helpers } from 'blog-backend';
 
 const cookies = Astro.request.headers.get('cookie');
-const { isValid, email } = await authenticationHandler(parseCookies(cookies));
+const { isValid, email } = await authenticationHandler(
+  helpers.parseCookies(cookies)
+);
 
 if (!isValid) {
   return Astro.redirect('/admin/login');
 }
 
-const users = await getUsers();
-const name = getUser(email, users).split(';')[2] || 'Anonymous';
-const posts = await listPosts();
+const users = await dbClient.getUsers();
+const name = helpers.getUser(email, users).split(';')[2] || 'Anonymous';
+const posts = await dbClient.listPosts();
 ---
 
 <!DOCTYPE html>

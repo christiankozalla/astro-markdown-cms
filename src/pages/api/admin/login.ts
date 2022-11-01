@@ -1,14 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import {
-  checkExistingUser,
-  createExpiryDate,
-  createSession,
-  getUser,
-} from "../../../lib/admin/helpers";
-import { decrypt } from "../../../lib/admin/hash";
-import { login, logout, readSessions } from "../../../lib/db-client";
-import type { User } from "../../../types";
+import type { User } from "blog-backend";
+import { dbClient, decrypt, helpers } from "blog-backend";
 import { APIRoute } from "astro";
 
 export const post: APIRoute = async ({ request }) => {
@@ -18,8 +11,8 @@ export const post: APIRoute = async ({ request }) => {
     { encoding: "utf8" },
   );
 
-  if (checkExistingUser(body.email, users)) {
-    const [email, encryptedPassword, name] = getUser(
+  if (helpers.checkExistingUser(body.email, users)) {
+    const [email, encryptedPassword, name] = helpers.getUser(
       body.email,
       users,
     ).split(";");
@@ -27,13 +20,13 @@ export const post: APIRoute = async ({ request }) => {
       body.password === decrypt(JSON.parse(encryptedPassword));
 
     if (isPasswordValid) {
-      const expiryDate = createExpiryDate();
-      const session = createSession(body.email, expiryDate);
+      const expiryDate = helpers.createExpiryDate();
+      const session = helpers.createSession(body.email, expiryDate);
 
-      const sessions = await readSessions();
+      const sessions = await dbClient.readSessions();
       // deletes all sessions of this user
-      await logout(body.email, sessions);
-      await login(session);
+      await dbClient.logout(body.email, sessions);
+      await dbClient.login(session);
 
       const cookie =
         `${import.meta.env.SESSION_NAME}=${session}; expires=${new Date(

@@ -1,13 +1,11 @@
 ---
 import '../../styles/admin.css';
 import Notification from '../../components/admin/Notification.astro';
-import { getPost } from '../../lib/db-client';
+import { authenticationHandler, dbClient, helpers } from 'blog-backend';
 import FrontMatter from '../../components/admin/FrontMatter.astro';
-import { authenticationHandler } from '../../lib/admin/auth';
-import { parseCookies } from '../../lib/admin/helpers';
 
 const cookies = Astro.request.headers.get('cookie');
-const { isValid } = await authenticationHandler(parseCookies(cookies));
+const { isValid } = await authenticationHandler(helpers.parseCookies(cookies));
 
 if (!isValid) {
   return Astro.redirect('/admin/login');
@@ -16,7 +14,7 @@ if (!isValid) {
 const slug = Astro.params.post.toString();
 
 const isDraft = Astro.url.searchParams.has('draft');
-const { post, error, hasAlternative } = await getPost(slug, isDraft);
+const { post, error, hasAlternative } = await dbClient.getPost(slug, isDraft);
 
 if (error !== null) {
   console.log(error);

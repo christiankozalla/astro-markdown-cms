@@ -18,6 +18,7 @@
   "dependencies": {
     "@astrojs/node": "^2.0.2",
     "@types/node": "^18.11.7",
+    "blog-backend": "github:christiankozalla/blog-backend",
     "marked": "^4.1.0"
   }
 }
