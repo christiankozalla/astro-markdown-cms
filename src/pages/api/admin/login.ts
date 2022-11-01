@@ -5,19 +5,12 @@ import { dbClient, decrypt, helpers } from "blog-backend";
 import { APIRoute } from "astro";
 
 export const post: APIRoute = async ({ request }) => {
-  const body = await request.json() as User;
-  const users = await readFile(
-    join(process.cwd(), "data", "cms", "users.txt"),
-    { encoding: "utf8" },
-  );
+  const body = (await request.json()) as User;
+  const users = await readFile(join(process.cwd(), "data", "cms", "users.txt"), { encoding: "utf8" });
 
   if (helpers.checkExistingUser(body.email, users)) {
-    const [email, encryptedPassword, name] = helpers.getUser(
-      body.email,
-      users,
-    ).split(";");
-    const isPasswordValid =
-      body.password === decrypt(JSON.parse(encryptedPassword));
+    const [email, encryptedPassword, name] = helpers.getUser(body.email, users).split(";");
+    const isPasswordValid = body.password === decrypt(JSON.parse(encryptedPassword));
 
     if (isPasswordValid) {
       const expiryDate = helpers.createExpiryDate();
@@ -28,10 +21,9 @@ export const post: APIRoute = async ({ request }) => {
       await dbClient.logout(body.email, sessions);
       await dbClient.login(session);
 
-      const cookie =
-        `${import.meta.env.SESSION_NAME}=${session}; expires=${new Date(
-          expiryDate,
-        )}; Path=/; ${import.meta.env.PROD ? "httpsOnly; secure;" : ""}`;
+      const cookie = `${import.meta.env.SESSION_NAME}=${session}; expires=${new Date(expiryDate)}; Path=/; ${
+        import.meta.env.PROD ? "httpsOnly; secure;" : ""
+      }`;
 
       return new Response(null, {
         status: 200,

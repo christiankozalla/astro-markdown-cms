@@ -5,5 +5,4 @@ initAuthFileSystem();
 initBlogFileSystem();
 
 export const SITE_TITLE = "Michaels Website";
-export const SITE_DESCRIPTION =
-  "Eine Website aus dem Leben von Michael Kozalla.";
+export const SITE_DESCRIPTION = "Eine Website aus dem Leben von Michael Kozalla.";

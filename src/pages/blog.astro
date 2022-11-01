@@ -1,21 +1,17 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { listPosts } from '../lib/db-client';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { dbClient } from "blog-backend";
 
-const posts = (await listPosts()).filter((post) => post.hasPublished);
+const posts = (await dbClient.listPosts()).filter((post) => post.hasPublished);
 ---
 
-<BaseLayout
-  title="Michaels Blog Übersicht"
-  description=""
-  permalink={Astro.site.href + 'blog'}
->
+<BaseLayout title="Michaels Blog Übersicht" description="" permalink={Astro.site.href + "blog"}>
   <h1>Blog Übersicht</h1>
   <ul>
     {
       posts.map((post) => (
         <li>
-          <a href={'/blog/' + post.slug}>{post.fileName}</a>
+          <a href={"/blog/" + post.slug}>{post.fileName}</a>
         </li>
       ))
     }

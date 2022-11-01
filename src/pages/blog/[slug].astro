@@ -1,24 +1,19 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { stripTrailingSlash } from '../../lib/helpers';
-import { getPost } from '../../lib/db-client';
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { dbClient } from "blog-backend";
 
 const slug = Astro.params.slug.toString(); // stripTrailingSlash(Astro.url.pathname).split('/').pop();
-const { post, error } = await getPost(slug);
+const { post, error } = await dbClient.getPost(slug);
 
 if (error) {
   console.log(error);
-  return Astro.redirect('/');
+  return Astro.redirect("/");
 }
 
 const permalink = `${Astro.site.href}${slug}`;
 ---
 
-<BaseLayout
-  title={post.frontMatter.title}
-  description={post.frontMatter.description}
-  permalink={permalink}
->
+<BaseLayout title={post.frontMatter.title} description={post.frontMatter.description} permalink={permalink}>
   <section>
     <p>{post.frontMatter.pubDate}</p>
     <h1>{post.frontMatter.title}</h1>

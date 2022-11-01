@@ -5,16 +5,13 @@ import type { User } from "blog-backend";
 import { dbClient, encrypt, helpers } from "blog-backend";
 
 export const post: APIRoute = async ({ request }) => {
-  const body = await request.json() as User;
+  const body = (await request.json()) as User;
   if (helpers.hasSemi(body.email, body.name)) {
     console.log("Email or Name include a Semicolon - Forbidden!");
     return;
   }
 
-  const users = await readFile(
-    join(process.cwd(), "data", "cms", "users.txt"),
-    { encoding: "utf8" },
-  );
+  const users = await readFile(join(process.cwd(), "data", "cms", "users.txt"), { encoding: "utf8" });
   if (helpers.hasSuperUser(users)) {
     console.log("Only a single user - the superuser - is allowed.");
     return new Response(null, { status: 409 });
@@ -29,22 +26,17 @@ export const post: APIRoute = async ({ request }) => {
 
     const appendUser = appendFile(
       join(process.cwd(), "data", "cms", "users.txt"),
-      helpers.csv(
-        body.email,
-        JSON.stringify(encryptedPassword),
-        body.name || "",
-      ),
-      { encoding: "utf8" },
+      helpers.csv(body.email, JSON.stringify(encryptedPassword), body.name || ""),
+      { encoding: "utf8" }
     );
 
     const appendSession = dbClient.login(session);
 
     await Promise.allSettled([appendUser, appendSession]);
 
-    const cookie =
-      `${import.meta.env.SESSION_NAME}=${session}; expires=${new Date(
-        expiryDate,
-      )}; Path=/; ${import.meta.env.PROD ? "httpsOnly; secure;" : ""}`;
+    const cookie = `${import.meta.env.SESSION_NAME}=${session}; expires=${new Date(expiryDate)}; Path=/; ${
+      import.meta.env.PROD ? "httpsOnly; secure;" : ""
+    }`;
 
     return new Response(null, {
       status: 201,

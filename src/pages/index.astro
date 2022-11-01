@@ -1,28 +1,19 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import TwoColumn from '../components/TwoColumn.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../config';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TwoColumn from "../components/TwoColumn.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../config";
 ---
 
-<BaseLayout
-  title={SITE_TITLE}
-  description={SITE_DESCRIPTION}
-  permalink={Astro.site.href}
->
+<BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION} permalink={Astro.site.href}>
   <TwoColumn>
     <div slot="left">
       <h1 class="headline">Michaels Blog</h1>
       <p class="copy font-size-big">
-        Moin! Moin! Ich bin Michael und schreibe hier über Gesundheit, Politik
-        und Fotografie.
+        Moin! Moin! Ich bin Michael und schreibe hier über Gesundheit, Politik und Fotografie.
       </p>
     </div>
     <div slot="right">
-      <img
-        class="image"
-        src="/michael-kozalla-photo-kunst.jpeg"
-        alt="Michael vor zwei seiner schönsten Fotografien"
-      />
+      <img class="image" src="/michael-kozalla-photo-kunst.jpeg" alt="Michael vor zwei seiner schönsten Fotografien" />
     </div>
   </TwoColumn>
   <style>
@@ -34,7 +25,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../config';
       margin-bottom: 1rem;
     }
     .headline::after {
-      content: '!';
+      content: "!";
       font-size: 5rem;
       font-weight: 900;
       color: #ff205e;
@@ -50,7 +41,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../config';
     }
 
     div:last-child::after {
-      content: ' ';
+      content: " ";
       border: 4px dashed #ff205e;
       position: absolute;
       z-index: 1;

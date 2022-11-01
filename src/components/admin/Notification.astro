@@ -1,5 +1,5 @@
 ---
-import '../../styles/admin.css';
+import "../../styles/admin.css";
 const { id, headline, body, cta } = Astro.props;
 ---
 
@@ -9,7 +9,7 @@ const { id, headline, body, cta } = Astro.props;
   <button onclick={`window.${id}.style.display = 'none'`}>{cta}</button>
 </div>
 <style>
-  div[role='dialog'] {
+  div[role="dialog"] {
     display: none;
     position: fixed;
     left: 50%;
