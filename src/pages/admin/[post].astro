@@ -90,21 +90,21 @@ if (error !== null) {
       document
         .querySelector('.back-to-dashboard')
         .addEventListener('click', function (e) {
-          if (!e.defaultPrevented) {
-            e.preventDefault();
-            e.hideNotification = true;
-            savePost(e);
-            e.target.dispatchEvent(new Event('click'));
-          }
+          e.preventDefault();
+          e.hideNotification = true;
+          savePost(e).then(
+            (response) =>
+              response.ok && location.replace(e.target.getAttribute('href'))
+          );
         });
-      function savePost(e) {
+      async function savePost(e) {
         if (e.target.dataset.noop !== undefined) return;
         e.target.disabled = true;
         const route = `/api/admin/posts/${slug}${
           e.target.dataset.draft ? '?draft' : ''
         }`;
 
-        fetch(route, {
+        const response = await fetch(route, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -113,13 +113,14 @@ if (error !== null) {
             markdown: window.post.markdown,
             frontMatter: window.post.frontMatter
           })
-        }).then((response) => {
-          if (response.status === 201 && !e.hideNotification) {
-            // show notification
-            success.style.display = 'block';
-          }
-          e.target.disabled = false;
         });
+
+        if (response.status === 201 && !e.hideNotification) {
+          // show notification
+          success.style.display = 'block';
+        }
+        e.target.disabled = false;
+        return response;
       }
     </script>
     <style>
