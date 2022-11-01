@@ -5,7 +5,8 @@
 html {
 	box-sizing: border-box;
 	--viewport-small: 560px;
-	--viewport-medium: 1024px
+	--viewport-medium: 768px;
+	--viewport-large: 1024px;
 }
 
 body {

@@ -8,7 +8,7 @@ export default defineConfig({
   adapter: node({ mode: 'standalone' }),
   outDir: './astro',
   server: {
-    host: true,
+    host: true, // if vite only runs on localhost, inside the docker container there's no way to expose localhost, so we need to expose all hosts
     port: 3000
   }
 });
