@@ -1,14 +1,19 @@
-import { defineConfig } from 'astro/config';
-import node from '@astrojs/node';
+import { defineConfig } from "astro/config";
+import node from "@astrojs/node";
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://example.com',
-  output: 'server',
-  adapter: node({ mode: 'standalone' }),
-  outDir: './astro',
+  site: "https://example.com",
+  output: "server",
+  adapter: node({ mode: "standalone" }),
+  outDir: "./astro",
   server: {
     host: true,
-    port: 3000
-  }
+    port: 3000,
+  },
+  vite: {
+    ssr: {
+      noExternal: ["blog-backend"],
+    }
+  },
 });
