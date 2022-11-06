@@ -1,16 +1,15 @@
 ---
-import '../../../styles/admin.css';
-import FrontMatter from '../../../components/admin/FrontMatter.astro';
-import { authenticationHandler } from '../../../lib/admin/auth';
-import { parseCookies, emptyPost } from '../../../lib/admin/helpers';
+import "../../../styles/admin.css";
+import FrontMatter from "../../../components/admin/FrontMatter.astro";
+import { authenticationHandler, helpers } from "blog-backend";
 
-const cookies = Astro.request.headers.get('cookie');
-const { isValid } = await authenticationHandler(parseCookies(cookies));
+const cookies = Astro.request.headers.get("cookie");
+const { isValid } = await authenticationHandler(helpers.parseCookies(cookies));
 
 if (!isValid) {
-  return Astro.redirect('/admin/login');
+  return Astro.redirect("/admin/login");
 }
-const post = emptyPost();
+const post = helpers.emptyPost();
 ---
 
 <!DOCTYPE html>
@@ -24,7 +23,7 @@ const post = emptyPost();
     <link rel="stylesheet" href="https://unpkg.com/bytemd/dist/index.css" />
     <script is:inline>
       window.process = {
-        env: 'production'
+        env: "production",
       };
     </script>
     <script is:inline src="https://unpkg.com/bytemd"></script>
@@ -41,7 +40,7 @@ const post = emptyPost();
         margin-bottom: 24px;
       }
 
-      #frontmatter span[id$='-display'] {
+      #frontmatter span[id$="-display"] {
         background-color: lightgrey;
         border-radius: 4px;
         margin-right: 8px;
@@ -73,19 +72,19 @@ const post = emptyPost();
     <script is:inline define:vars={{ post }}>
       window.post = post;
       const editor = new bytemd.Editor({
-        target: document.getElementById('markdown-editor'),
+        target: document.getElementById("markdown-editor"),
         props: {
-          value: post.markdown
-        }
+          value: post.markdown,
+        },
       });
 
-      editor.$on('change', (e) => {
+      editor.$on("change", (e) => {
         post.markdown = e.detail.value;
         editor.$set({ value: e.detail.value });
       });
 
-      const editorControls = document.getElementById('editor-controls');
-      editorControls.addEventListener('click', (e) => {
+      const editorControls = document.getElementById("editor-controls");
+      editorControls.addEventListener("click", (e) => {
         if (!post.frontMatter.title) {
           // display user notification
           return;
@@ -95,17 +94,17 @@ const post = emptyPost();
         const isDraft = e.target.dataset.draft;
         e.target.disabled = true;
 
-        const route = `/api/admin/posts/${slug}${isDraft ? '?draft' : ''}`;
+        const route = `/api/admin/posts/${slug}${isDraft ? "?draft" : ""}`;
 
         fetch(route, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             markdown: window.post.markdown,
-            frontMatter: window.post.frontMatter
-          })
+            frontMatter: window.post.frontMatter,
+          }),
         }).then((response) => {
           console.log(response);
           if (response.status === 201) {
@@ -118,10 +117,10 @@ const post = emptyPost();
       function slugify(input) {
         return input
           .toLowerCase()
-          .replace(/\u00fc/g, 'ue')
-          .replace(/\u00e4/g, 'ae')
-          .replace(/\u00f6/g, 'oe')
-          .replaceAll(' ', '-');
+          .replace(/\u00fc/g, "ue")
+          .replace(/\u00e4/g, "ae")
+          .replace(/\u00f6/g, "oe")
+          .replaceAll(" ", "-");
       }
     </script>
   </body>

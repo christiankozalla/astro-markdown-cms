@@ -1,44 +1,29 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import {
-  checkExistingUser,
-  createExpiryDate,
-  createSession,
-  getUser,
-} from "../../../lib/admin/helpers";
-import { decrypt } from "../../../lib/admin/hash";
-import { login, logout, readSessions } from "../../../lib/db-client";
-import type { User } from "../../../types";
+import type { User } from "blog-backend";
+import { dbClient, decrypt, helpers } from "blog-backend";
 import { APIRoute } from "astro";
 
 export const post: APIRoute = async ({ request }) => {
-  const body = await request.json() as User;
-  const users = await readFile(
-    join(process.cwd(), "data", "cms", "users.txt"),
-    { encoding: "utf8" },
-  );
+  const body = (await request.json()) as User;
+  const users = await readFile(join(process.cwd(), "data", "cms", "users.txt"), { encoding: "utf8" });
 
-  if (checkExistingUser(body.email, users)) {
-    const [email, encryptedPassword, name] = getUser(
-      body.email,
-      users,
-    ).split(";");
-    const isPasswordValid =
-      body.password === decrypt(JSON.parse(encryptedPassword));
+  if (helpers.checkExistingUser(body.email, users)) {
+    const [email, encryptedPassword, name] = helpers.getUser(body.email, users).split(";");
+    const isPasswordValid = body.password === decrypt(JSON.parse(encryptedPassword));
 
     if (isPasswordValid) {
-      const expiryDate = createExpiryDate();
-      const session = createSession(body.email, expiryDate);
+      const expiryDate = helpers.createExpiryDate();
+      const session = helpers.createSession(body.email, expiryDate);
 
-      const sessions = await readSessions();
+      const sessions = await dbClient.readSessions();
       // deletes all sessions of this user
-      await logout(body.email, sessions);
-      await login(session);
+      await dbClient.logout(body.email, sessions);
+      await dbClient.login(session);
 
-      const cookie =
-        `${import.meta.env.SESSION_NAME}=${session}; expires=${new Date(
-          expiryDate,
-        )}; Path=/; ${import.meta.env.PROD ? "httpsOnly; secure;" : ""}`;
+      const cookie = `${import.meta.env.SESSION_NAME}=${session}; expires=${new Date(expiryDate)}; Path=/; ${
+        import.meta.env.PROD ? "httpsOnly; secure;" : ""
+      }`;
 
       return new Response(null, {
         status: 200,

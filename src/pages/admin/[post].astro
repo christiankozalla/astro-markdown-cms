@@ -1,26 +1,24 @@
 ---
-import '../../styles/admin.css';
-import Notification from '../../components/admin/Notification.astro';
-import { getPost } from '../../lib/db-client';
-import FrontMatter from '../../components/admin/FrontMatter.astro';
-import { authenticationHandler } from '../../lib/admin/auth';
-import { parseCookies } from '../../lib/admin/helpers';
+import "../../styles/admin.css";
+import Notification from "../../components/admin/Notification.astro";
+import { authenticationHandler, dbClient, helpers } from "blog-backend";
+import FrontMatter from "../../components/admin/FrontMatter.astro";
 
-const cookies = Astro.request.headers.get('cookie');
-const { isValid } = await authenticationHandler(parseCookies(cookies));
+const cookies = Astro.request.headers.get("cookie");
+const { isValid } = await authenticationHandler(helpers.parseCookies(cookies));
 
 if (!isValid) {
-  return Astro.redirect('/admin/login');
+  return Astro.redirect("/admin/login");
 }
 
 const slug = Astro.params.post.toString();
 
-const isDraft = Astro.url.searchParams.has('draft');
-const { post, error, hasAlternative } = await getPost(slug, isDraft);
+const isDraft = Astro.url.searchParams.has("draft");
+const { post, error, hasAlternative } = await dbClient.getPost(slug, isDraft);
 
 if (error !== null) {
   console.log(error);
-  return Astro.redirect('/admin', 307);
+  return Astro.redirect("/admin", 307);
 }
 ---
 
@@ -35,7 +33,7 @@ if (error !== null) {
     <link rel="stylesheet" href="https://unpkg.com/bytemd/dist/index.css" />
     <script is:inline>
       window.process = {
-        env: 'production'
+        env: "production",
       };
     </script>
     <script is:inline src="https://unpkg.com/bytemd"></script>
@@ -43,17 +41,13 @@ if (error !== null) {
 
   <body>
     <FrontMatter frontmatter={post.frontMatter}>
-      <a
-        class="back-to-dashboard"
-        href="/admin"
-        data-draft="save-draft-before-routing">&#129044;</a
-      ><h1>Meta-Daten</h1>
+      <a class="back-to-dashboard" href="/admin" data-draft="save-draft-before-routing">&#129044;</a><h1>Meta-Daten</h1>
       <div id="post-status">
         Status: {isDraft ? <span>Entwurf</span> : <span>Live</span>}
         {
           hasAlternative && (
             <a class="text" href={hasAlternative}>
-              {isDraft ? 'Zur veröffentlichten Version' : 'Zum Entwurf'}
+              {isDraft ? "Zur veröffentlichten Version" : "Zum Entwurf"}
             </a>
           )
         }
@@ -65,59 +59,47 @@ if (error !== null) {
       <button id="publish">Veröffentlichen</button>
     </div>
     <div id="markdown-editor"></div>
-    <Notification
-      id="success"
-      headline="Hurraa!"
-      body="Die Aktion war erfolgreich :D"
-      cta="Weiter"
-    />
+    <Notification id="success" headline="Hurraa!" body="Die Aktion war erfolgreich :D" cta="Weiter" />
     <script is:inline define:vars={{ post, slug }}>
       window.post = post;
       const editor = new bytemd.Editor({
-        target: document.getElementById('markdown-editor'),
+        target: document.getElementById("markdown-editor"),
         props: {
-          value: post.markdown
-        }
+          value: post.markdown,
+        },
       });
 
-      editor.$on('change', (e) => {
+      editor.$on("change", (e) => {
         post.markdown = e.detail.value;
         editor.$set({ value: e.detail.value });
       });
 
-      const editorControls = document.getElementById('editor-controls');
-      editorControls.addEventListener('click', savePost);
-      document
-        .querySelector('.back-to-dashboard')
-        .addEventListener('click', function (e) {
-          e.preventDefault();
-          e.hideNotification = true;
-          savePost(e).then(
-            (response) =>
-              response.ok && location.replace(e.target.getAttribute('href'))
-          );
-        });
+      const editorControls = document.getElementById("editor-controls");
+      editorControls.addEventListener("click", savePost);
+      document.querySelector(".back-to-dashboard").addEventListener("click", function (e) {
+        e.preventDefault();
+        e.hideNotification = true;
+        savePost(e).then((response) => response.ok && location.replace(e.target.getAttribute("href")));
+      });
       async function savePost(e) {
         if (e.target.dataset.noop !== undefined) return;
         e.target.disabled = true;
-        const route = `/api/admin/posts/${slug}${
-          e.target.dataset.draft ? '?draft' : ''
-        }`;
+        const route = `/api/admin/posts/${slug}${e.target.dataset.draft ? "?draft" : ""}`;
 
         const response = await fetch(route, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             markdown: window.post.markdown,
-            frontMatter: window.post.frontMatter
-          })
+            frontMatter: window.post.frontMatter,
+          }),
         });
 
         if (response.status === 201 && !e.hideNotification) {
           // show notification
-          success.style.display = 'block';
+          success.style.display = "block";
         }
         e.target.disabled = false;
         return response;
@@ -138,7 +120,7 @@ if (error !== null) {
         padding-left: 1rem;
       }
 
-      #frontmatter span[id$='-display'] {
+      #frontmatter span[id$="-display"] {
         background-color: lightgrey;
         border-radius: 4px;
         margin-right: 8px;

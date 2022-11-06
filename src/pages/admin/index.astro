@@ -1,19 +1,17 @@
 ---
-import '../../styles/admin.css';
-import { listPosts, getUsers } from '../../lib/db-client';
-import { authenticationHandler } from '../../lib/admin/auth';
-import { getUser, parseCookies } from '../../lib/admin/helpers';
+import "../../styles/admin.css";
+import { dbClient, authenticationHandler, helpers } from "blog-backend";
 
-const cookies = Astro.request.headers.get('cookie');
-const { isValid, email } = await authenticationHandler(parseCookies(cookies));
+const cookies = Astro.request.headers.get("cookie");
+const { isValid, email } = await authenticationHandler(helpers.parseCookies(cookies));
 
 if (!isValid) {
-  return Astro.redirect('/admin/login');
+  return Astro.redirect("/admin/login");
 }
 
-const users = await getUsers();
-const name = getUser(email, users).split(';')[2] || 'Anonymous';
-const posts = await listPosts();
+const users = await dbClient.getUsers();
+const name = helpers.getUser(email, users).split(";")[2] || "Anonymous";
+const posts = await dbClient.listPosts();
 ---
 
 <!DOCTYPE html>
@@ -34,10 +32,10 @@ const posts = await listPosts();
           posts.map((post) => (
             <li style="margin-bottom: 12px">
               {post.fileName}
-              <a class="ghost edit-link" href={'/admin/' + post.slug}>
+              <a class="ghost edit-link" href={"/admin/" + post.slug}>
                 Bearbeiten
               </a>
-              <a class="ghost edit-link" href={'/admin' + post.slug + '?draft'}>
+              <a class="ghost edit-link" href={"/admin" + post.slug + "?draft"}>
                 Entwurf bearbeiten
               </a>
             </li>
