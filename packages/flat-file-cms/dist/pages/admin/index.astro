@@ -1,6 +1,10 @@
 ---
 import '../../styles/admin.css';
-import { dbClient, authenticationHandler, helpers } from '../../blog-backend/index.js';
+import {
+  dbClient,
+  authenticationHandler,
+  helpers
+} from '../../blog-backend/index.js';
 
 const cookies = Astro.request.headers.get('cookie');
 const { isValid, email } = await authenticationHandler(
@@ -38,7 +42,10 @@ const posts = await dbClient.listPosts();
               <a class="ghost edit-link" href={'/admin/' + post.slug}>
                 Bearbeiten
               </a>
-              <a class="ghost edit-link" href={'/admin' + post.slug + '?draft'}>
+              <a
+                class="ghost edit-link"
+                href={'/admin/' + post.slug + '?draft'}
+              >
                 Entwurf bearbeiten
               </a>
             </li>

@@ -4,6 +4,7 @@ import { initAuthFileSystem } from "./blog-backend/init-auth-files.js";
 import { initBlogFileSystem } from "./blog-backend/init-blog-files.js";
 initAuthFileSystem();
 initBlogFileSystem();
+export { dbClient } from "./blog-backend/index.js";
 // type EnvNames = "CMS_SECRET" | "SESSION_NAME";
 // export interface CmsOptions {
 //   env: Record<EnvNames, string>;
