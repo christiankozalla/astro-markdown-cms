@@ -1,7 +1,7 @@
 ---
 import '../../../styles/admin.css';
 import FrontMatter from '../../../components/admin/FrontMatter.astro';
-import { authenticationHandler, helpers } from '../../../blog-backend';
+import { authenticationHandler, helpers } from '../../../blog-backend/index.js';
 
 const cookies = Astro.request.headers.get('cookie');
 const { isValid } = await authenticationHandler(

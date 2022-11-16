@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { User } from "../../../blog-backend";
-import { dbClient, decrypt, helpers } from "../../../blog-backend";
+import type { User } from "../../../blog-backend/index.js";
+import { dbClient, decrypt, helpers } from "../../../blog-backend/index.js";
 import { APIRoute } from "astro";
 
 export const post: APIRoute = async ({ request }) => {

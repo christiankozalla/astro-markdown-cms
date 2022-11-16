@@ -1,8 +1,8 @@
 import { APIRoute } from "astro";
 import { appendFile, readFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { User } from "../../../blog-backend";
-import { dbClient, encrypt, helpers } from "../../../blog-backend";
+import type { User } from "../../../blog-backend/index.js";
+import { dbClient, encrypt, helpers } from "../../../blog-backend/index.js";
 
 export const post: APIRoute = async ({ request }) => {
   const body = (await request.json()) as User;

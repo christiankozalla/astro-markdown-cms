@@ -3,7 +3,7 @@ import {
   authenticationHandler,
   dbClient,
   helpers,
-} from "../../../../blog-backend";
+} from "../../../../blog-backend/index.js";
 
 export const post: APIRoute = async ({ params, request }) => {
   const cookies = request.headers.get("cookie");

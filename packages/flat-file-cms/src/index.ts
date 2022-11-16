@@ -1,9 +1,10 @@
 import type { AstroIntegration } from "astro";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-// import { initAuthFileSystem, initBlogFileSystem } from "./blog-backend";
-// initAuthFileSystem();
-// initBlogFileSystem();
+import { initAuthFileSystem } from "./blog-backend/init-auth-files.js";
+import { initBlogFileSystem } from "./blog-backend/init-blog-files.js";
+initAuthFileSystem();
+initBlogFileSystem();
 
 // type EnvNames = "CMS_SECRET" | "SESSION_NAME";
 // export interface CmsOptions {

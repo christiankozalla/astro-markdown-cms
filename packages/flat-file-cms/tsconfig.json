@@ -1,6 +1,6 @@
 {
   "extends": "astro/tsconfigs/base",
-  "include": ["src/index.ts", "src/env.d.ts"],
+  "include": ["src/index.ts", "src/env.d.ts", "src/blog-backend"],
   "compilerOptions": {
     "allowJs": true,
     "module": "ES2020",
