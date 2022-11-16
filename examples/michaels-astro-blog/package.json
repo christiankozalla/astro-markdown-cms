@@ -1,5 +1,5 @@
 {
-  "name": "@example/blog",
+  "name": "michaels-astro-blog",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -12,16 +12,14 @@
     "prod": "PORT=3000 node ./astro/dist/server/entry.mjs"
   },
   "devDependencies": {
-    "@types/marked": "^4.0.7",
-    "astro": "^1.6.1",
+    "@types/node": "^18.11.7",
+    "astro": "^1.6.7",
     "prettier": "^2.7.1",
     "vite": "^3.2.1"
   },
   "dependencies": {
     "@astrojs/node": "^2.0.2",
-    "@types/node": "^18.11.7",
-    "blog-backend": "github:christiankozalla/blog-backend",
-    "marked": "^4.1.0"
+    "flat-file-cms": "^0.1.0"
   },
   "prettier": {
     "singleQuote": false,

@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { dbClient } from "blog-backend";
+import { dbClient } from "flat-file-cms/utils";
 
 const slug = Astro.params.slug.toString(); // stripTrailingSlash(Astro.url.pathname).split('/').pop();
 const { post, error } = await dbClient.getPost(slug);
@@ -20,7 +20,7 @@ const permalink = `${Astro.site.href}${slug}`;
     <hr />
   </section>
   <div class="container">
-    <article class="content" set:html={post.html}></article>
+    <article class="content" set:html={post.html} />
     <hr />
   </div>
 </BaseLayout>

@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config";
 import node from "@astrojs/node";
+import flatFileCmsIntegration from "flat-file-cms";
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,9 +12,5 @@ export default defineConfig({
     host: true,
     port: 3000,
   },
-  vite: {
-    ssr: {
-      noExternal: ["blog-backend"],
-    }
-  },
+  integrations: [flatFileCmsIntegration()],
 });

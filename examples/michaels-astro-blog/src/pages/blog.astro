@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { dbClient } from "blog-backend";
+import { dbClient } from "flat-file-cms/utils";
 
 const posts = (await dbClient.listPosts()).filter((post) => post.hasPublished);
 ---
