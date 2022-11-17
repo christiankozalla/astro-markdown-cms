@@ -5,7 +5,7 @@ import { authenticationHandler, helpers } from '../../../blog-backend/index.js';
 
 const cookies = Astro.request.headers.get('cookie');
 const { isValid } = await authenticationHandler(
-  helpers.parseCookies(cookies),
+  helpers.parseCookies(cookies)
   import.meta.env.SESSION_NAME
 );
 

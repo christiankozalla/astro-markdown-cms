@@ -3,13 +3,17 @@ import { join } from "path";
 import { getSession } from "./helpers.js";
 
 // const sessionName = import.meta?.env?.SESSION_NAME ||
-// process.env.SESSION_NAME ||
-// "DEFAULT_SESSION";
+process.env.SESSION_NAME;
 
 export async function authenticationHandler(
   cookies: Record<string, string>[],
   sessionName: string = import.meta?.env?.SESSION_NAME,
 ) {
+  if (typeof sessionName !== "string") {
+    throw new Error(
+      "Please provide an environment variable SESSION_NAME as a cookie name.",
+    );
+  }
   // check if user has a cookie
   const cookie = cookies.find((cookie) =>
     Object.prototype.hasOwnProperty.call(

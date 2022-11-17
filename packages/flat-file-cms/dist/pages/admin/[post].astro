@@ -1,7 +1,11 @@
 ---
 import '../../styles/admin.css';
 import Notification from '../../components/admin/Notification.astro';
-import { authenticationHandler, dbClient, helpers } from '../../blog-backend/index.js';
+import {
+  authenticationHandler,
+  dbClient,
+  helpers
+} from '../../blog-backend/index.js';
 import FrontMatter from '../../components/admin/FrontMatter.astro';
 
 const cookies = Astro.request.headers.get('cookie');

@@ -30,7 +30,7 @@ export default function flatFileCmsIntegration(
   return {
     name: "flat-file-cms",
     hooks: {
-      "astro:config:setup": ({ injectRoute }) => {
+      "astro:config:setup": ({ updateConfig, injectRoute }) => {
         // FIXME: updateConfig seems to have no effect, so I am passing import.meta.env.MY_VAR
         // from Astro endpoints and pages to functions as a parameter!
         // updateConfig({
