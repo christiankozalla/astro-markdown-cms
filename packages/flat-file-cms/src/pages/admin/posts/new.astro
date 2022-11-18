@@ -1,13 +1,11 @@
 ---
 import '../../../styles/admin.css';
 import FrontMatter from '../../../components/admin/FrontMatter.astro';
-import { authenticationHandler, helpers } from '../../../blog-backend/index.js';
+import * as helpers from '../../../blog-backend/helpers';
+import { authenticationHandler } from '../../../blog-backend/auth';
 
 const cookies = Astro.request.headers.get('cookie');
-const { isValid } = await authenticationHandler(
-  helpers.parseCookies(cookies)
-  import.meta.env.SESSION_NAME
-);
+const { isValid } = await authenticationHandler(helpers.parseCookies(cookies));
 
 if (!isValid) {
   return Astro.redirect('/admin/login');

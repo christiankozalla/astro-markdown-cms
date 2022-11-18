@@ -1,8 +1,10 @@
 import { APIRoute } from "astro";
 import { appendFile, readFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { User } from "../../../blog-backend/index.js";
-import { dbClient, encrypt, helpers } from "../../../blog-backend/index.js";
+import type { User } from "../../../blog-backend/types";
+import * as helpers from "../../../blog-backend/helpers";
+import * as dbClient from "../../../blog-backend/db-client";
+import { encrypt } from "../../../blog-backend/hash";
 
 export const post: APIRoute = async ({ request }) => {
   const body = (await request.json()) as User;
@@ -24,7 +26,6 @@ export const post: APIRoute = async ({ request }) => {
   } else {
     const encryptedPassword = encrypt(
       body.password,
-      import.meta.env.CMS_SECRET,
     );
     // should login(email) do create session instead and return the session?
     const expiryDate = helpers.createExpiryDate();

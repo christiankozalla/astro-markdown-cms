@@ -1,15 +1,12 @@
 ---
 import '../../styles/admin.css';
-import {
-  dbClient,
-  authenticationHandler,
-  helpers
-} from '../../blog-backend/index.js';
+import * as helpers from '../../blog-backend/helpers';
+import * as dbClient from '../../blog-backend/db-client';
+import { authenticationHandler } from '../../blog-backend/auth';
 
 const cookies = Astro.request.headers.get('cookie');
 const { isValid, email } = await authenticationHandler(
-  helpers.parseCookies(cookies),
-  import.meta.env.SESSION_NAME
+  helpers.parseCookies(cookies)
 );
 
 if (!isValid) {

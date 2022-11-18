@@ -1,15 +1,12 @@
 import { APIRoute } from "astro";
-import {
-  authenticationHandler,
-  dbClient,
-  helpers,
-} from "../../../../blog-backend/index.js";
+import * as helpers from "../../../../blog-backend/helpers";
+import { authenticationHandler } from "../../../../blog-backend/auth";
+import * as dbClient from "../../../../blog-backend/db-client";
 
 export const post: APIRoute = async ({ params, request }) => {
   const cookies = request.headers.get("cookie");
   const { isValid, email } = await authenticationHandler(
     helpers.parseCookies(cookies),
-    import.meta.env.SESSION_NAME,
   );
   if (!isValid || !params.slug) {
     return new Response(null, { status: 401 });

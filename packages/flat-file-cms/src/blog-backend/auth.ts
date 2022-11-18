@@ -2,13 +2,11 @@ import { readFile } from "node:fs/promises";
 import { join } from "path";
 import { getSession } from "./helpers.js";
 
-// const sessionName = import.meta?.env?.SESSION_NAME ||
-process.env.SESSION_NAME;
+const sessionName = import.meta.env.SESSION_NAME || process.env.SESSION_NAME;
 
-export async function authenticationHandler(
-  cookies: Record<string, string>[],
-  sessionName: string = import.meta?.env?.SESSION_NAME,
-) {
+console.log("when do I fire?");
+
+export async function authenticationHandler(cookies: Record<string, string>[]) {
   if (typeof sessionName !== "string") {
     throw new Error(
       "Please provide an environment variable SESSION_NAME as a cookie name.",

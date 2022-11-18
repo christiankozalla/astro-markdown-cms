@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "description": "An Astro Integration to provide a Flat-File CMS",
   "type": "module",
-  "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "src",
+    "index.ts"
   ],
-  "main": "./dist/index.js",
+  "exports": {
+    ".": "./index.ts"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/christiankozalla/astro-flat-file-cms.git",
@@ -17,19 +19,15 @@
     "withastro",
     "astro-integration"
   ],
-  "scripts": {
-    "dev": "tsc --watch",
-    "build": "rm -rf dist && tsc && npm run copy-assets",
-    "copy-assets": "cp -r src/. dist/ && rm dist/index.ts"
-  },
   "author": "Christian Kozalla",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^18.11.9",
     "@types/marked": "^4.0.7",
-    "vite": "^3.2.3"
+    "astro": "^1.6.10"
   },
   "peerDependencies": {
-    "astro": "^1.6.3",
+    "astro": "^1.6.10",
     "marked": "^4.2.2"
   }
 }

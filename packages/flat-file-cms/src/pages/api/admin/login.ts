@@ -1,7 +1,9 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { User } from "../../../blog-backend/index.js";
-import { dbClient, decrypt, helpers } from "../../../blog-backend/index.js";
+import type { User } from "../../../blog-backend/types";
+import * as helpers from "../../../blog-backend/helpers";
+import * as dbClient from "../../../blog-backend/db-client";
+import { decrypt } from "../../../blog-backend/hash";
 import { APIRoute } from "astro";
 
 export const post: APIRoute = async ({ request }) => {
@@ -16,7 +18,7 @@ export const post: APIRoute = async ({ request }) => {
       .getUser(body.email, users)!
       .split(";");
     const isPasswordValid = body.password ===
-      decrypt(JSON.parse(encryptedPassword), import.meta.env.CMS_SECRET);
+      decrypt(JSON.parse(encryptedPassword));
 
     if (isPasswordValid) {
       const expiryDate = helpers.createExpiryDate();

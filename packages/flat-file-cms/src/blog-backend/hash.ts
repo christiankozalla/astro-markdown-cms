@@ -1,13 +1,11 @@
 import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
 
 const algorithm = "aes-256-ctr";
-// const secretKey = import.meta?.env?.CMS_SECRET || process.env.CMS_SECRET;
+const secretKey = import.meta.env.CMS_SECRET || process.env.CMS_SECRET;
 
 function encrypt(
   text: string,
-  secretKey: string = import.meta?.env?.CMS_SECRET,
 ) {
-  // const secretKey = import.meta?.env?.CMS_SECRET || process.env.CMS_SECRET;
   if (typeof secretKey !== "string") {
     throw new Error(
       "Provide a secret key (32-bit string) to encrypt / decrypt passwords.",
@@ -25,9 +23,7 @@ function encrypt(
 
 function decrypt(
   hash: { iv: string; content: string },
-  secretKey: string = import.meta?.env?.CMS_SECRET,
 ) {
-  // const secretKey = import.meta?.env?.CMS_SECRET || process.env.CMS_SECRET;
   if (typeof secretKey !== "string") {
     throw new Error(
       "Provide a secret key (32-bit string) to encrypt / decrypt passwords.",
