@@ -1,18 +1,18 @@
-import type { Post } from "./types.js";
+import type { Post } from './types.js';
 export type Cookie = Record<string, string>;
 
 export function checkExistingUser(email: string, list: string) {
-  const emailExits = list.split("\n").some((entry) => entry.startsWith(email));
+  const emailExits = list.split('\n').some((entry) => entry.startsWith(email));
 
   return emailExits;
 }
 
 export function getSession(email: string, list: string) {
-  return list.split("\n").find((entry) => entry.startsWith(email));
+  return list.split('\n').find((entry) => entry.startsWith(email));
 }
 
 export function getUser(email: string, list: string) {
-  return list.split("\n").find((entry) => entry.startsWith(email));
+  return list.split('\n').find((entry) => entry.startsWith(email));
 }
 
 export function purgeList(email: string, list: string[]) {
@@ -24,11 +24,11 @@ export function purgeList(email: string, list: string[]) {
 }
 
 export function base64(string: string) {
-  return Buffer.from(string).toString("base64url");
+  return Buffer.from(string).toString('base64url');
 }
 
 export function csv(...strings: string[]) {
-  return strings.join(";") + "\n";
+  return strings.join(';') + '\n';
 }
 
 function randomString() {
@@ -36,7 +36,7 @@ function randomString() {
 }
 
 export function hasSemi(...strings: string[]) {
-  return strings.includes(";");
+  return strings.includes(';');
 }
 
 export function createSession(emailBase64: string, expiryDateMs: number) {
@@ -51,28 +51,28 @@ export function createExpiryDate() {
 }
 
 export function hasSuperUser(users: string) {
-  return users.split("\n").filter(Boolean).length > 1;
+  return users.split('\n').filter(Boolean).length > 1;
 }
 
 export function parseCookies(cookies: string | null): Cookie[] {
   if (!cookies) return [];
-  const arrayLike = cookies.split(";").map((cookie) => cookie.split("="));
+  const arrayLike = cookies.split(';').map((cookie) => cookie.split('='));
   return arrayLike.map(([key, value]) => ({ [key]: value }));
 }
 
 export function emptyPost(): Post {
   return {
-    markdown: "",
+    markdown: '',
     frontMatter: {
-      title: "",
-      description: "",
-      heroImage: "",
-      pubDate: "",
-      layout: "../../layouts/BlogPost.astro",
-    },
+      title: '',
+      description: '',
+      heroImage: '',
+      pubDate: '',
+      layout: '../../layouts/BlogPost.astro'
+    }
   };
 }
 
 export function slugify(title: string): string {
-  return title.replaceAll(" ", "-").toLowerCase();
+  return title.replaceAll(' ', '-').toLowerCase();
 }

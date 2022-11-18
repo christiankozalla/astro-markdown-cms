@@ -1,5 +1,5 @@
 {
-  "name": "flat-file-cms",
+  "name": "astro-markdown-cms",
   "version": "0.1.0",
   "description": "An Astro Integration to provide a Flat-File CMS",
   "type": "module",
@@ -22,12 +22,14 @@
   "author": "Christian Kozalla",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^18.11.9",
     "@types/marked": "^4.0.7",
+    "@types/node": "^18.11.9",
     "astro": "^1.6.10"
   },
   "peerDependencies": {
-    "astro": "^1.6.10",
+    "astro": "^1.6.10"
+  },
+  "dependencies": {
     "marked": "^4.2.2"
   }
 }

@@ -4,8 +4,6 @@ import { getSession } from "./helpers.js";
 
 const sessionName = import.meta.env.SESSION_NAME || process.env.SESSION_NAME;
 
-console.log("when do I fire?");
-
 export async function authenticationHandler(cookies: Record<string, string>[]) {
   if (typeof sessionName !== "string") {
     throw new Error(
@@ -14,16 +12,11 @@ export async function authenticationHandler(cookies: Record<string, string>[]) {
   }
   // check if user has a cookie
   const cookie = cookies.find((cookie) =>
-    Object.prototype.hasOwnProperty.call(
-      cookie,
-      sessionName,
-    )
+    Object.prototype.hasOwnProperty.call(cookie, sessionName)
   );
 
   if (cookie) {
-    const sessionData = await validateSession(
-      cookie[sessionName],
-    );
+    const sessionData = await validateSession(cookie[sessionName]);
     return sessionData;
   } else {
     return { isValid: false, email: undefined };

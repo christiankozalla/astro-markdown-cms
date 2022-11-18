@@ -1,6 +1,6 @@
 import { defineConfig } from "astro/config";
 import node from "@astrojs/node";
-import flatFileCmsIntegration from "flat-file-cms";
+import markdownCms from "astro-markdown-cms";
 
 // https://astro.build/config
 export default defineConfig({
@@ -12,5 +12,5 @@ export default defineConfig({
     host: true,
     port: 3000,
   },
-  integrations: [flatFileCmsIntegration()],
+  integrations: [markdownCms()],
 });

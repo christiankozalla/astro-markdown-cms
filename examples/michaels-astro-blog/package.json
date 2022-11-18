@@ -18,8 +18,8 @@
     "vite": "^3.2.1"
   },
   "dependencies": {
-    "@astrojs/node": "^2.0.2",
-    "flat-file-cms": "^0.1.0"
+    "@astrojs/node": "^3.1.0",
+    "astro-markdown-cms": "^0.1.0"
   },
   "prettier": {
     "singleQuote": false,

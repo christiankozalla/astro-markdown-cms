@@ -3,36 +3,35 @@ import {
   readdir,
   readFile,
   unlink,
-  writeFile,
-} from "node:fs/promises";
-import { join } from "node:path";
-import { marked } from "marked";
-import { purgeList } from "./helpers.js";
-import type { Post, Response } from "./types.js";
-const sessionsPath = join(process.cwd(), "data", "cms", "sessions.txt");
-const blogDir = join(process.cwd(), "data", "blog");
+  writeFile
+} from 'node:fs/promises';
+import { join } from 'node:path';
+import { marked } from 'marked';
+import { purgeList } from './helpers.js';
+import type { Post, Response } from './types.js';
+const sessionsPath = join(process.cwd(), 'data', 'cms', 'sessions.txt');
+const blogDir = join(process.cwd(), 'data', 'blog');
 
 export async function getUsers() {
-  return await readFile(
-    join(process.cwd(), "data", "cms", "users.txt"),
-    { encoding: "utf8" },
-  );
+  return await readFile(join(process.cwd(), 'data', 'cms', 'users.txt'), {
+    encoding: 'utf8'
+  });
 }
 
 export async function readSessions() {
-  const strings = await readFile(sessionsPath, { encoding: "utf8" });
-  const sessions = strings.split("\n");
+  const strings = await readFile(sessionsPath, { encoding: 'utf8' });
+  const sessions = strings.split('\n');
   return sessions;
 }
 
 export function login(session: string) {
-  return appendFile(sessionsPath, "\n" + session + "\n", { encoding: "utf8" });
+  return appendFile(sessionsPath, '\n' + session + '\n', { encoding: 'utf8' });
 }
 
 // Delete all sessions with base64-encoded email
 export function logout(emailBase64: string, sessions: string[]) {
-  return writeFile(sessionsPath, purgeList(emailBase64, sessions).join("\n"), {
-    encoding: "utf8",
+  return writeFile(sessionsPath, purgeList(emailBase64, sessions).join('\n'), {
+    encoding: 'utf8'
   });
 }
 
@@ -40,36 +39,31 @@ export function logout(emailBase64: string, sessions: string[]) {
 export async function listPosts() {
   const [published, drafts] = await allPosts();
   // please forgive me...
-  published.splice(published.indexOf("drafts"), 1);
+  published.splice(published.indexOf('drafts'), 1);
   const posts = Array.from(new Set([...published, ...drafts])).map((file) => {
     return {
       fileName: file,
-      slug: file.slice(0, file.indexOf(".md")),
+      slug: file.slice(0, file.indexOf('.md')),
       hasPublished: published.includes(file),
-      hasDraft: drafts.includes(file),
+      hasDraft: drafts.includes(file)
     };
   });
   return posts;
 }
 
 export async function allPosts() {
-  return Promise.all([
-    readdir(blogDir),
-    readdir(join(blogDir, "drafts")),
-  ]);
+  return Promise.all([readdir(blogDir), readdir(join(blogDir, 'drafts'))]);
 }
 export async function getPost(
   id: string,
-  draft = false,
-): Promise<
-  { post: Post | null; error: null | Error; hasAlternative: string }
-> {
+  draft = false
+): Promise<{ post: Post | null; error: null | Error; hasAlternative: string }> {
   const fileName = `${id}.md`;
   const [posts, drafts] = await allPosts();
-  const response: Response = { post: null, error: null, hasAlternative: "" };
+  const response: Response = { post: null, error: null, hasAlternative: '' };
   if (Array.isArray(posts) && posts.includes(fileName)) {
     const raw = await readFile(join(blogDir, fileName), {
-      encoding: "utf8",
+      encoding: 'utf8'
     });
     response.post = parseFrontmatterAndMarkdown(raw);
   }
@@ -77,8 +71,8 @@ export async function getPost(
     if (draft) {
       // alternative is the published post
       response.hasAlternative = `/admin/${id}`;
-      const raw = await readFile(join(blogDir, "drafts", fileName), {
-        encoding: "utf8",
+      const raw = await readFile(join(blogDir, 'drafts', fileName), {
+        encoding: 'utf8'
       });
       response.post = parseFrontmatterAndMarkdown(raw);
     } else {
@@ -95,11 +89,11 @@ export async function writePost(id: string, post: Post, isDraft: boolean) {
   const fileName = `${id}.md`;
   let destination: string;
   if (isDraft) {
-    destination = join(blogDir, "drafts", fileName);
+    destination = join(blogDir, 'drafts', fileName);
   } else {
     destination = join(blogDir, fileName);
     try {
-      const draftUrl = join(blogDir, "drafts", fileName);
+      const draftUrl = join(blogDir, 'drafts', fileName);
       // and delete the draft before publishing
       await unlink(draftUrl);
     } catch (err) {
@@ -111,7 +105,7 @@ export async function writePost(id: string, post: Post, isDraft: boolean) {
       }
     }
   }
-  return writeFile(destination, serializePost(post), { encoding: "utf8" });
+  return writeFile(destination, serializePost(post), { encoding: 'utf8' });
 }
 
 function parseFrontmatterAndMarkdown(raw: string): Post | null {
@@ -120,26 +114,28 @@ function parseFrontmatterAndMarkdown(raw: string): Post | null {
   if (result === null) {
     return null;
   } else {
-    const lines = result[1].split("\n").filter(Boolean).map((line) => {
-      const [key, value] = line.split(": ");
-      return `"${key}":${value}`;
-    });
-    const strigified = `{${lines.join(",")}}`;
+    const lines = result[1]
+      .split('\n')
+      .filter(Boolean)
+      .map((line) => {
+        const [key, value] = line.split(': ');
+        return `"${key}":${value}`;
+      });
+    const strigified = `{${lines.join(',')}}`;
     const frontMatter = JSON.parse(strigified);
-    const html = marked.parse(raw.slice(raw.indexOf("---\n\n") + 5));
-    const markdown = raw.slice(raw.indexOf("---\n\n") + 5);
+    const html = marked.parse(raw.slice(raw.indexOf('---\n\n') + 5));
+    const markdown = raw.slice(raw.indexOf('---\n\n') + 5);
     return {
       html,
       markdown,
-      frontMatter,
+      frontMatter
     };
   }
 }
 
 function serializePost(post: Post) {
-  const yamlFrontMatter = `---\n${
-    Object.entries(post.frontMatter).map(([key, value]) => `${key}: "${value}"`)
-      .join("\n")
-  }\n---\n\n`;
+  const yamlFrontMatter = `---\n${Object.entries(post.frontMatter)
+    .map(([key, value]) => `${key}: "${value}"`)
+    .join('\n')}\n---\n\n`;
   return yamlFrontMatter + post.markdown;
 }
