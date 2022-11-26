@@ -24,7 +24,7 @@ In order to use the Astro Markdown CMS integration in your Astro project, you ne
 
 - enable SSR by adding an adapter, e.g. `npx astro add node` [More on Astro adapters here](https://astro.build/integrations/adapters/)
 - Provide environment variables in `.env`.
-  - `MARKDONW_CMS_SECRET` - a 32bit string used as an encryption key for user passwords
+  - `MARKDOWN_CMS_SECRET` - a 32bit string used as an encryption key for user passwords
   - `MARKDOWN_CMS_SESSION_NAME` (optional) - a name for the session cookie
 
 Install the integration with
