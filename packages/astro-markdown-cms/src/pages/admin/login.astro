@@ -1,3 +1,8 @@
+---
+import '../../styles/global.css';
+import '../../styles/auth.css';
+---
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -5,18 +10,33 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>CMS Login</title>
+    <title>Log in to Astro Markdown CMS</title>
   </head>
   <body>
-    <h1>CMS Login</h1>
-    <p>Log dich in deinen Account ein und bearbeite den Blog.</p>
-    <form>
-      <label for="email">E-Mail</label>
-      <input type="text" id="email" name="email" />
-      <label for="password">Passwort</label>
-      <input type="password" id="password" name="password" />
-      <input type="submit" />
-    </form>
+    <section class="auth__card">
+      <h1>Log In</h1>
+      <p>Use your account to log in to Astro Markdown CMS.</p>
+      <form>
+        <label for="email">Email</label>
+        <input
+          type="text"
+          id="email"
+          name="email"
+          placeholder="tim@apple.com"
+        />
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="keep it secret"
+        />
+        <input type="submit" value="Log In" />
+      </form>
+      <p class="go-to-login">
+        No account yet? <a href="/admin/login">Sign Up</a>
+      </p>
+    </section>
     <script type="module">
       const form = document.querySelector('form');
       form.addEventListener('submit', function (e) {

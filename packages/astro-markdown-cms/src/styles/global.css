@@ -1,0 +1,16 @@
+:root {
+  --primary-color: #3700B3;
+  --white: #fff;
+  --radius: 6px;
+  --text-light: rgb(90, 90, 100);
+  --text-lightest: rgb(150, 150, 160);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  font-size: 1.2rem;
+}

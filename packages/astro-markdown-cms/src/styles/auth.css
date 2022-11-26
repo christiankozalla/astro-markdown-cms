@@ -1,0 +1,67 @@
+body {
+  display: grid;
+  place-items: center;
+}
+
+.auth__card {
+  max-width: 500px;
+  width: 80%;
+  padding: 24px;
+  margin-top: 48px;
+  margin-bottom: 96px;
+  border-radius: var(--radius);
+  box-shadow: 0 0 56px -6px rgba(0, 0, 0, 0.25);
+  color: var(--text-light);
+}
+
+@media screen and (max-width: 500px) {
+  .auth__card {
+    width: 100%;
+    max-width: unset;
+    margin-top: 0;
+  }
+}
+
+h1 {
+  margin-top: 0;
+}
+
+input {
+  display: block;
+  width: 100%;
+  height: 48px;
+  border-radius: var(--radius);
+  border: 1px solid lightgrey;
+  font-size: inherit;
+  padding: 0 12px;
+}
+
+input + input,
+input + label {
+  display: block;
+  margin-top: 12px;
+}
+
+input::placeholder {
+  color: var(--text-lightest);
+  font-style: italic;
+  font-size: 1rem;
+}
+
+input:focus {
+  border: 1px solid grey;
+}
+
+input[type=submit] {
+  color: var(--white);
+  font-weight: bold;
+  background-color: var(--primary-color);
+  border: none;
+}
+
+.go-to-login,
+.go-to-register {
+  text-align: center;
+  font-size: 1rem;
+  margin-bottom: 0;
+}
