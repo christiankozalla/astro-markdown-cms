@@ -5,6 +5,7 @@ import type { User } from '../../../blog-backend/types';
 import * as helpers from '../../../blog-backend/helpers';
 import * as dbClient from '../../../blog-backend/db-client';
 import { encrypt } from '../../../blog-backend/hash';
+import { sessionName } from '../../../blog-backend/auth';
 
 export const post: APIRoute = async ({ request }) => {
   const body = (await request.json()) as User;
@@ -44,7 +45,7 @@ export const post: APIRoute = async ({ request }) => {
     await Promise.allSettled([appendUser, appendSession]);
 
     const cookie = `${
-      import.meta.env.SESSION_NAME
+      sessionName
     }=${session}; expires=${new Date(expiryDate)}; Path=/; ${
       import.meta.env.PROD ? 'httpsOnly; secure;' : ''
     }`;

@@ -4,7 +4,7 @@ interface ImportMeta {
     readonly BASE_URL: string;
     readonly PROD: boolean;
     readonly DEV: boolean;
-    readonly CMS_SECRET?: string;
-    readonly SESSION_NAME?: string;
+    readonly MARKDOWN_CMS_SECRET?: string;
+    readonly MARKDOWN_SESSION_NAME?: string;
   };
 }

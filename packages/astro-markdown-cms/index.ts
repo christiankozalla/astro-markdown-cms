@@ -8,8 +8,6 @@ initBlogFileSystem();
 
 export * as dbClient from "./src/blog-backend/db-client";
 
-// type EnvNames = "CMS_SECRET" | "SESSION_NAME";
-
 const _dirname = typeof __dirname !== "undefined"
   ? __dirname
   : dirname(fileURLToPath(import.meta.url));

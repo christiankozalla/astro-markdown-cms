@@ -5,6 +5,7 @@ import * as helpers from '../../../blog-backend/helpers';
 import * as dbClient from '../../../blog-backend/db-client';
 import { decrypt } from '../../../blog-backend/hash';
 import { APIRoute } from 'astro';
+import { sessionName } from '../../../blog-backend/auth';
 
 export const post: APIRoute = async ({ request }) => {
   const body = (await request.json()) as User;
@@ -30,7 +31,7 @@ export const post: APIRoute = async ({ request }) => {
       await dbClient.login(session);
 
       const cookie = `${
-        import.meta.env.SESSION_NAME
+        sessionName
       }=${session}; expires=${new Date(expiryDate)}; Path=/; ${
         import.meta.env.PROD ? 'httpsOnly; secure;' : ''
       }`;
