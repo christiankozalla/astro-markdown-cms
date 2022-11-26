@@ -5,6 +5,6 @@ interface ImportMeta {
     readonly PROD: boolean;
     readonly DEV: boolean;
     readonly MARKDOWN_CMS_SECRET?: string;
-    readonly MARKDOWN_SESSION_NAME?: string;
+    readonly MARKDOWN_CMS_SESSION_NAME?: string;
   };
 }
