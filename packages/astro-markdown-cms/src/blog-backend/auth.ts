@@ -6,11 +6,6 @@ export const sessionName: string = import.meta.env.MARKDOWN_CMS_SESSION_NAME ||
   process.env.MARKDOWN_CMS_SESSION_NAME || "markdown-cms-session";
 
 export async function authenticationHandler(cookies: Record<string, string>[]) {
-  if (typeof sessionName !== "string") {
-    throw new Error(
-      "Please provide an environment variable MARKDOWN_CMS_SESSION_NAME as a cookie name.",
-    );
-  }
   // check if user has a cookie
   const cookie = cookies.find((cookie) =>
     Object.prototype.hasOwnProperty.call(cookie, sessionName)
