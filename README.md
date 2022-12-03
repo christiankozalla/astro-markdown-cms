@@ -56,6 +56,18 @@ export default defineConfig({
 });
 ```
 
+## Routes
+
+The CMS provides several Astro pages and API endpoints:
+
+- `/admin` - The Dashboard to manage blog posts
+- `/admin/login` - Login form for the user
+- `/admin/register` - Register form - only a single user can register at the moment, because otherwise literally *anyone* could register and mess with your blog posts.
+- `/admin/posts/new` - Gives you an empty editor in order to create a blog post from scratch.
+- `/admin/[slug]` - Blog post editor to write and manange a post
+- `/api/admin/login`, `/api/admin/register` - Endpoints that receive credentials, issue session cookies.
+- `/api/admin/posts/[slug]` - Endpoint to process instructions from the blog post editor.
+
 ## Example: Use in dynamic page `[slug].astro`
 
 ```javascript
