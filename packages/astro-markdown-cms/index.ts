@@ -8,8 +8,6 @@ initBlogFileSystem();
 
 export * as dbClient from "./src/blog-backend/db-client";
 
-// type EnvNames = "CMS_SECRET" | "SESSION_NAME";
-
 const _dirname = typeof __dirname !== "undefined"
   ? __dirname
   : dirname(fileURLToPath(import.meta.url));
@@ -19,18 +17,6 @@ export default function flatFileCmsIntegration(): AstroIntegration {
     name: "flat-file-cms",
     hooks: {
       "astro:config:setup": ({ injectRoute }) => {
-        // FIXME: updateConfig seems to have no effect, so I am passing import.meta.env.MY_VAR
-        // from Astro endpoints and pages to functions as a parameter!
-        // updateConfig({
-        //   vite: {
-        //     ssr: {
-        //       noExternal: [
-        //         "flat-file-cms",
-        //       ],
-        //     },
-        //   },
-        // });
-
         injectRoute({
           pattern: "/admin",
           entryPoint: join(_dirname, "src", "pages", "admin", "index.astro"),

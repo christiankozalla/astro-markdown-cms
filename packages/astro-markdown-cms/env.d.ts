@@ -1,10 +1,10 @@
-interface ImportMeta {
-  readonly env: {
-    readonly MODE: string;
-    readonly BASE_URL: string;
-    readonly PROD: boolean;
-    readonly DEV: boolean;
-    readonly CMS_SECRET?: string;
-    readonly SESSION_NAME?: string;
-  };
+/// <reference types="astro/client" />
+
+interface ImportMetaEnv {
+  MODE: string;
+  BASE_URL: string;
+  PROD: boolean;
+  DEV: boolean;
+  CMS_SECRET?: string;
+  SESSION_NAME?: string;
 }

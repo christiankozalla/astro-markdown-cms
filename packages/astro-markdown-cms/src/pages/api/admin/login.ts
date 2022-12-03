@@ -1,22 +1,22 @@
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
-import type { User } from '../../../blog-backend/types';
-import * as helpers from '../../../blog-backend/helpers';
-import * as dbClient from '../../../blog-backend/db-client';
-import { decrypt } from '../../../blog-backend/hash';
-import { APIRoute } from 'astro';
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+import type { User } from "../../../blog-backend/types";
+import * as helpers from "../../../blog-backend/helpers";
+import * as dbClient from "../../../blog-backend/db-client";
+import { decrypt } from "../../../blog-backend/hash";
+import { APIRoute } from "astro";
 
 export const post: APIRoute = async ({ request }) => {
   const body = (await request.json()) as User;
   const users = await readFile(
-    join(process.cwd(), 'data', 'cms', 'users.txt'),
-    { encoding: 'utf8' }
+    join(process.cwd(), "data", "cms", "users.txt"),
+    { encoding: "utf8" },
   );
 
   if (helpers.checkExistingUser(body.email, users)) {
     const [email, encryptedPassword, name] = helpers
       .getUser(body.email, users)!
-      .split(';');
+      .split(";");
     const isPasswordValid =
       body.password === decrypt(JSON.parse(encryptedPassword));
 
@@ -29,22 +29,21 @@ export const post: APIRoute = async ({ request }) => {
       await dbClient.logout(body.email, sessions);
       await dbClient.login(session);
 
-      const cookie = `${
-        import.meta.env.SESSION_NAME
-      }=${session}; expires=${new Date(expiryDate)}; Path=/; ${
-        import.meta.env.PROD ? 'httpsOnly; secure;' : ''
-      }`;
+      const cookie =
+        `${import.meta.env.SESSION_NAME}=${session}; expires=${new Date(
+          expiryDate,
+        )}; Path=/; ${import.meta.env.PROD ? "httpsOnly; secure;" : ""}`;
 
       return new Response(null, {
         status: 200,
-        headers: { 'Set-Cookie': cookie }
+        headers: { "Set-Cookie": cookie },
       });
     } else {
-      console.log('Bad password - unauthorized');
+      console.log("Bad password - unauthorized");
       return new Response(null, { status: 403 });
     }
   } else {
-    console.log('User does not exist');
+    console.log("User does not exist");
     return new Response(null, { status: 401 });
   }
 };
