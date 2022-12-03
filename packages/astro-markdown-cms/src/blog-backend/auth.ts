@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "path";
 import { getSession } from "./helpers.js";
 
-export const sessionName = import.meta.env.MARKDOWN_CMS_SESSION_NAME ||
+export const sessionName: string = import.meta.env.MARKDOWN_CMS_SESSION_NAME ||
   process.env.MARKDOWN_CMS_SESSION_NAME || "markdown-cms-session";
 
 export async function authenticationHandler(cookies: Record<string, string>[]) {
