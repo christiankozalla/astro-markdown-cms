@@ -2,7 +2,8 @@
 
 ## DB docs
 
-The following JSON structure was initially planned, but is not implemented yet! The Database rather consists of txt-files, that hold the records line-by-line.
+The following JSON structure was initially planned, but is not implemented yet!
+The Database rather consists of txt-files, that hold the records line-by-line.
 
 The Database consists of JSON files.
 
@@ -21,9 +22,10 @@ The Database consists of JSON files.
 
 To ensure "findability" of records, we need to follow some conventions:
 
-1. The user's email will always be processed base-64 encoded. Not for security reasons, of course, but for string matching to find a record by email.
-2. So the client needs to send the email already base-64 encoded to the server, for convenience.
-
+1. The user's email will always be processed base-64 encoded. Not for security
+   reasons, of course, but for string matching to find a record by email.
+2. So the client needs to send the email already base-64 encoded to the server,
+   for convenience.
 
 ### Sessions
 
@@ -37,7 +39,6 @@ Sessions will be stored in `sessions.json`
   }
 }
 ```
-
 
 ## 🚀 Project Structure
 
@@ -55,9 +56,11 @@ Inside of your Astro project, you'll see the following folders and files:
 └── tsconfig.json
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page
+is exposed as a route based on its file name.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+There's nothing special about `src/components/`, but that's where we like to put
+any Astro/React/Vue/Svelte/Preact components.
 
 Any static assets, like images, can be placed in the `public/` directory.
 
@@ -76,8 +79,10 @@ All commands are run from the root of the project, from a terminal:
 
 ## 👀 Want to learn more?
 
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Check out [our documentation](https://docs.astro.build) or jump into our
+[Discord server](https://astro.build/chat).
 
 ## Credit
 
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+This theme is based off of the lovely
+[Bear Blog](https://github.com/HermanMartinus/bearblog/).

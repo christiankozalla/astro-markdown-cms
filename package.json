@@ -2,6 +2,9 @@
   "name": "astro-flat-file-cms",
   "version": "1.0.0",
   "description": "Astro blog instances relying on an flat-file CMS Astro integration",
+  "scripts": {
+    "format": "deno fmt"
+  },
   "workspaces": [
     "examples/michaels-astro-blog",
     "packages/*"
