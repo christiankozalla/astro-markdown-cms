@@ -2,12 +2,13 @@ import { readFile } from "node:fs/promises";
 import { join } from "path";
 import { getSession } from "./helpers.js";
 
-const sessionName = import.meta.env.SESSION_NAME || process.env.SESSION_NAME;
+export const sessionName = import.meta.env.MARKDOWN_CMS_SESSION_NAME ||
+  process.env.MARKDOWN_CMS_SESSION_NAME || "markdown-cms-session";
 
 export async function authenticationHandler(cookies: Record<string, string>[]) {
   if (typeof sessionName !== "string") {
     throw new Error(
-      "Please provide an environment variable SESSION_NAME as a cookie name.",
+      "Please provide an environment variable MARKDOWN_CMS_SESSION_NAME as a cookie name.",
     );
   }
   // check if user has a cookie
