@@ -7,6 +7,7 @@ initAuthFileSystem();
 initBlogFileSystem();
 
 export * as dbClient from "./src/blog-backend/db-client";
+export type { SendMail } from "./src/blog-backend/types";
 
 const _dirname = typeof __dirname !== "undefined"
   ? __dirname
@@ -84,6 +85,18 @@ export default function flatFileCmsIntegration(): AstroIntegration {
             "admin",
             "posts",
             "[slug].ts",
+          ),
+        });
+
+        injectRoute({
+          pattern: "/api/admin/verify",
+          entryPoint: join(
+            _dirname,
+            "src",
+            "pages",
+            "api",
+            "admin",
+            "verify.ts",
           ),
         });
       },

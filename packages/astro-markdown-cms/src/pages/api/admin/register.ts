@@ -1,11 +1,18 @@
 import { APIRoute } from "astro";
 import { appendFile, readFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { User } from "../../../blog-backend/types";
+import { randomUUID } from "node:crypto";
+import type { SendMail, User } from "../../../blog-backend/types";
 import * as helpers from "../../../blog-backend/helpers";
-import * as dbClient from "../../../blog-backend/db-client";
 import { encrypt } from "../../../blog-backend/hash";
-import { sessionName } from "../../../blog-backend/auth";
+import { sendVerificationEmail } from "../../../blog-backend/mailer";
+let userlandCallback: SendMail;
+try {
+  userlandCallback = await import(join(process.cwd(), "markdown-cms-mail"))
+    .then((module) => module.default);
+} catch (error) {
+  console.log("Error importing", error);
+}
 
 export const post: APIRoute = async ({ request }) => {
   const body = (await request.json()) as User;
@@ -26,31 +33,36 @@ export const post: APIRoute = async ({ request }) => {
     return new Response(null, { status: 409 });
   } else {
     const encryptedPassword = encrypt(body.password);
-    // should login(email) do create session instead and return the session?
-    const expiryDate = helpers.createExpiryDate();
-    const session = helpers.createSession(body.email, expiryDate);
-
-    const appendUser = appendFile(
-      join(process.cwd(), "data", "cms", "users.txt"),
+    const uuid = randomUUID();
+    // store user in "pending-users.txt"
+    await appendFile(
+      join(process.cwd(), "data", "cms", "pending-users.txt"),
       helpers.csv(
         body.email,
         JSON.stringify(encryptedPassword),
         body.name || "",
+        uuid,
       ),
       { encoding: "utf8" },
     );
 
-    const appendSession = dbClient.login(session);
+    // send email
+    const expires = Date.now() + (1000 * 60 * 60 * 24); // in one day
+    const token = helpers.toBase64(
+      JSON.stringify({ email: body.email, expires, uuid }),
+    );
 
-    await Promise.allSettled([appendUser, appendSession]);
+    const link = new URL("/api/admin/verify", new URL(request.url).origin);
+    link.searchParams.set(
+      "token",
+      token,
+    );
 
-    const cookie = `${sessionName}=${session}; expires=${new Date(
-      expiryDate,
-    )}; Path=/; ${import.meta.env.PROD ? "httpsOnly; secure;" : ""}`;
-
-    return new Response(null, {
-      status: 201,
-      headers: { "Set-Cookie": cookie },
-    });
+    await sendVerificationEmail(
+      body.email,
+      link.toString(),
+      userlandCallback,
+    );
+    return new Response(null, { status: 201 });
   }
 };

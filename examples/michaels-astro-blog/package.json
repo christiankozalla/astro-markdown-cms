@@ -13,13 +13,15 @@
   },
   "devDependencies": {
     "@types/node": "^18.11.7",
+    "@types/nodemailer": "^6.4.6",
     "astro": "^1.6.7",
     "prettier": "^2.7.1",
     "vite": "^3.2.1"
   },
   "dependencies": {
     "@astrojs/node": "^3.1.0",
-    "astro-markdown-cms": "^0.1.0"
+    "astro-markdown-cms": "^0.1.0",
+    "nodemailer": "^6.8.0"
   },
   "prettier": {
     "singleQuote": false,

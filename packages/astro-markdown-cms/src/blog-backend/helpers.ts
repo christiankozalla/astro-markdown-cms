@@ -76,3 +76,11 @@ export function emptyPost(): Post {
 export function slugify(title: string): string {
   return title.replaceAll(" ", "-").toLowerCase();
 }
+
+export function toUTF8(base64: string) {
+  return Buffer.from(base64, "base64").toString("utf8");
+}
+
+export function toBase64(utf8: string) {
+  return Buffer.from(utf8, "utf8").toString("base64");
+}

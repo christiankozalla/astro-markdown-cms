@@ -34,16 +34,23 @@ import '../../styles/auth.css';
           placeholder="keep it secret"
         />
         <label for="Name">Name</label>
-        <input type="text" name="name" id="name" />
+        <input type="text" name="name" id="name" placeholder="your user name" />
         <input type="submit" value="Sign Up" />
       </form>
+      <p class="success" style="display: none">
+        <strong>Success!</strong> A verifaction email has been sent to your inbox.
+        Please click the link in the email to complete the registration.<br />
+        Happy blogging with Markdown CMS!
+      </p>
       <p class="go-to-login">
         Already have an account? <a href="/admin/login">Log In</a>
       </p>
     </section>
     <script type="module">
+      const submitButton = document.querySelector('input[type=submit]');
       const form = document.querySelector('form');
       form.addEventListener('submit', function (e) {
+        submitButton.setAttribute('disabled', 'true');
         e.preventDefault();
         const formData = new FormData(form);
 
@@ -61,7 +68,9 @@ import '../../styles/auth.css';
           body: JSON.stringify(Object.fromEntries(formData.entries()))
         }).then((res) => {
           if (res.status === 201) {
-            location.replace('/admin');
+            document.querySelector('.success').style.display = 'block';
+          } else {
+            submitButton.removeAttribute('disabled');
           }
         });
       });

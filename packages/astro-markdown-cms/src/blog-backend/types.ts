@@ -34,3 +34,9 @@ export type Response = {
   error: Error | null;
   hasAlternative: string;
 };
+
+interface MailContext {
+  to: string;
+  html: string;
+}
+export type SendMail = ({ to, html }: MailContext) => Promise<void>;
