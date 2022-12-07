@@ -56,6 +56,23 @@ export default defineConfig({
 });
 ```
 
+### Email verification
+
+A user can sign up with their email address. To support "Forgot password" feature, the email address needs to be validated. Upon registration, an email with a token valid for one day is sent to the users inbox.
+
+To enable email delivery, Astro Markdown CMS expects a file at `src/markdown-cms-mail.{ts|js|mjs}` to export a function with the following signature
+
+```typescript
+// file: src/markdown-cms-mail.{ts|js|mjs}
+import type { SendMail } from "astro-markdown-cms";
+
+export default function({ to, html }: { to: string, html: string }): Promise<void> {
+  // @param to - the receivers email address
+  // @param html - an HTML string containing the validation links
+  // Pass these parameters to your preferred email service.   
+}
+```
+
 ## Routes
 
 The CMS provides several Astro pages and API endpoints:

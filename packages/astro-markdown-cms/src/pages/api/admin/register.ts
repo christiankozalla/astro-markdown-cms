@@ -6,12 +6,26 @@ import type { SendMail, User } from "../../../blog-backend/types";
 import * as helpers from "../../../blog-backend/helpers";
 import { encrypt } from "../../../blog-backend/hash";
 import { sendVerificationEmail } from "../../../blog-backend/mailer";
-let userlandCallback: SendMail;
-try {
-  userlandCallback = await import(join(process.cwd(), "markdown-cms-mail"))
-    .then((module) => module.default);
-} catch (error) {
-  console.log("Error importing", error);
+let emailCallback: SendMail;
+let importPath: string;
+const filePaths = [
+  ["src", "markdown-cms-mail.ts"],
+  ["src", "markdown-cms-mail.js"],
+  ["src", "markdown-cms-mail.mjs"],
+];
+
+for (let i = 0; i < filePaths.length; i++) {
+  try {
+    importPath = join(process.cwd(), ...filePaths[i]);
+    emailCallback = await import(
+      /* @vite-ignore */ importPath
+    )
+      .then((module) => module.default);
+    if (typeof emailCallback === "function") break;
+  } catch (error) {
+    console.error("Error importing sendMail from:", importPath);
+    emailCallback = undefined;
+  }
 }
 
 export const post: APIRoute = async ({ request }) => {
@@ -57,12 +71,17 @@ export const post: APIRoute = async ({ request }) => {
       "token",
       token,
     );
-
-    await sendVerificationEmail(
-      body.email,
-      link.toString(),
-      userlandCallback,
-    );
+    if (typeof emailCallback === "function") {
+      await sendVerificationEmail(
+        body.email,
+        link.toString(),
+        emailCallback,
+      );
+    } else {
+      throw Error(
+        "Please provide a function for email validation. Check the README for more information.",
+      );
+    }
     return new Response(null, { status: 201 });
   }
 };

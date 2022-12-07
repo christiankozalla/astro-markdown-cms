@@ -18,10 +18,11 @@ import '../../styles/auth.css';
       <form>
         <label for="email">Email</label>
         <input
-          type="text"
+          type="email"
           id="email"
           name="email"
           placeholder="tim@apple.com"
+          required
         />
         <label for="password">Password</label>
         <input
@@ -29,8 +30,9 @@ import '../../styles/auth.css';
           id="password"
           name="password"
           placeholder="keep it secret"
+          required
         />
-        <input type="submit" value="Log In" />
+        <button type="submit">Log In</button>
       </form>
       <p class="go-to-login">
         No account yet? <a href="/admin/register">Sign Up</a>

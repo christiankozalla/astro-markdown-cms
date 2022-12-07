@@ -35,8 +35,7 @@ export type Response = {
   hasAlternative: string;
 };
 
-interface MailContext {
+export type SendMail = ({ to, html }: {
   to: string;
   html: string;
-}
-export type SendMail = ({ to, html }: MailContext) => Promise<void>;
+}) => Promise<void>;

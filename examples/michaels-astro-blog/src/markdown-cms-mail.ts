@@ -1,7 +1,6 @@
 import nodemailer from "nodemailer";
 import type { SendMail } from "astro-markdown-cms";
 
-// from user-land
 const testAccount = await nodemailer.createTestAccount();
 // create reusable transporter object using the default SMTP transport
 let transporter = nodemailer.createTransport({
