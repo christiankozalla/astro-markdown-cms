@@ -1,19 +1,50 @@
 import { APIRoute } from "astro";
-import * as helpers from "../../../blog-backend/helpers";
 import { appendFile, readFile, writeFile } from "node:fs/promises";
+import { sessionName } from "../../../blog-backend/auth";
 import { join } from "node:path";
 import * as dbClient from "../../../blog-backend/db-client";
-import { sessionName } from "../../../blog-backend/auth";
+import * as helpers from "../../../blog-backend/helpers";
 
-export const get: APIRoute = async ({ request, redirect }) => {
+const htmlResponse = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Email Verification - Astro Markdown CMS</title>
+<style>body {font-family: system-ui, sans-serif;}</style>
+</head>
+<body>
+  <h1>Email Verification has failed</h1>
+  <a href="/">Return to Home</a>
+</body>
+</html>`;
+
+export const get: APIRoute = async ({ request }) => {
   const searchParams = new URL(request.url).searchParams;
   const token = searchParams.get("token"); // Buffer.from(token, 'base64-url').toString() // {uuid, expires, email}
-  if (!token) {
-    return redirect("/bad-token");
+  const tokenValue = helpers.tryParseToJsonObject(helpers.toUTF8(token));
+
+  if (!tokenValue) {
+    return new Response(
+      htmlResponse,
+      {
+        status: 422,
+        headers: { "Content-Type": "text/html" },
+      },
+    );
   }
 
-  const { email, expires, uuid } = JSON.parse(helpers.toUTF8(token));
-  console.log(email, expires, uuid);
+  const { email, expires, uuid } = tokenValue as {
+    email: string;
+    expires: number;
+    uuid: string;
+  };
+
+  if (Date.now() > expires) {
+    return new Response(htmlResponse, {
+      status: 422,
+      headers: { "Content-Type": "text/html" },
+    });
+  }
+
   const pendingUsers = (await readFile(
     join(process.cwd(), "data", "cms", "pending-users.txt"),
     { encoding: "utf8" },
@@ -59,15 +90,11 @@ export const get: APIRoute = async ({ request, redirect }) => {
     }
   }
 
-  // take a token as a query param
-  // the token is a base64-encoded object: email, expires, uuid
-  // parse the data
-  // look into file "pending-users.txt"
-  // match with an existing entry => YES : NO
-  // YES: move (copy and delete) entry from "pending-verification.txt" to "users.txt" (without "uuid")
-  // NO: WHY => "EXPIRED" : "NOMATCH"
-  // NOMATCH: return redirect("/bad-token")
-  // EXPIRED: return redirect("/token-expired") AND delete entry from "pending-verification.txt"
-
-  return redirect("/bad-token");
+  return new Response(
+    htmlResponse,
+    {
+      status: 403,
+      headers: { "Content-Type": "text/html" },
+    },
+  );
 };

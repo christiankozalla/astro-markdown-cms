@@ -1,3 +1,4 @@
+import { parse } from "node:path";
 import type { Post } from "./types.js";
 export type Cookie = Record<string, string>;
 
@@ -83,4 +84,16 @@ export function toUTF8(base64: string) {
 
 export function toBase64(utf8: string) {
   return Buffer.from(utf8, "utf8").toString("base64");
+}
+
+export function tryParseToJsonObject(json: string): object | false {
+  try {
+    const parsed = JSON.parse(json);
+
+    if (parsed && typeof parsed === "object") return parsed;
+  } catch (e) {
+    console.error("Could not parse JSON:", e);
+    return false;
+  }
+  return false;
 }
